@@ -10,10 +10,10 @@ portfolio_site/
 ├─ build_details.py      # (배포 불필요) 노션 md → 상세 HTML 변환 스크립트
 └─ README.md
 ```
-> `build_details.py`, `README.md`는 사이트 동작에 필요 없습니다. 올려도 무방하지만 빼도 됩니다.
+> `build_details.py`, `README.md`는 사이트 동작에 필요없음
 
 ## 로컬 미리보기
-`index.html`을 브라우저로 열면 됩니다. (이미지 경로가 상대경로라 더블클릭만으로 동작)
+`index.html`을 브라우저로 오픈
 
 ## GitHub Pages 배포 (username.github.io)
 1. GitHub에서 `<username>.github.io` 이름의 public 저장소 생성
