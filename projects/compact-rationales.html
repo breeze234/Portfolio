@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Are Compact Rationales Free? Measuring Tile Selection Headroom in Frozen WSI-MIL — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Conference · NeurIPS 2026</div>
+  <h1>Are Compact Rationales Free? Measuring Tile Selection Headroom in Frozen WSI-MIL</h1>
+  <div class="metachips"><span class="chip">Co-Author</span><span class="chip">Foundation Model · MIL</span><span class="chip">Explainable AI</span><span class="status review">Under Review</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<p><img alt="Thumnail. FOCI Architecture" src="../assets/compact-rationales/image.png"></p>
+<p>Thumnail. FOCI Architecture</p>
+<div class="callout">
+<p>💡</p>
+<p><strong>Summary: <a href="https://arxiv.org/pdf/2605.12575">Link - arxiv</a></strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Duration</strong></th>
+<th>2026.02 - 2026.05</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Role</strong></td>
+<td>Co Author</td>
+</tr>
+<tr>
+<td>Research Area</td>
+<td>Computational Pathology · Explainable AI</td>
+</tr>
+<tr>
+<td>Keywords</td>
+<td>WSI · MIL · Interpretability · Foundation Model</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>NeurIPS 2026 Submission</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2><strong>🎯 What problem did we solve?</strong></h2>
+<h4>1. Background</h4>
+<p>Attention scores are widely used as explanations in Whole Slide Image (WSI) Multiple Instance Learning (MIL). However, high attention does not necessarily indicate that a small subset of image patches is sufficient to reproduce the model's prediction. Existing attention-based explanations therefore provide limited evidence for whether a prediction can truly be supported by a compact and faithful rationale.</p>
+<h4>❓ Research Questions</h4>
+<ul>
+<li>Can a frozen WSI-MIL model recover its prediction from only a small subset of image patches?</li>
+<li>Does every MIL architecture inherently possess compact rationale representations?</li>
+<li>How can we quantitatively evaluate the "selection headroom" of different MIL models?</li>
+</ul>
+<h4>🎯 Objective</h4>
+<p>To develop a lightweight post-hoc rationale readout framework that identifies compact, output-consistent tile subsets from frozen WSI-MIL models and systematically measures how much explanation headroom exists across different MIL architectures.</p>
+<h2>🧠 How did we solve it?</h2>
+<h4>2. Dataset</h4>
+<ul>
+<li>TCGA-NSCLC</li>
+<li>TCGA-BRCA</li>
+<li>PANDA</li>
+</ul>
+<p>Three public pathology benchmarks were used to evaluate rationale compactness across diverse tissue types and prediction tasks.</p>
+<h4>3. Method</h4>
+<p><img alt="Fig 1. Overall Framework" src="../assets/compact-rationales/image_1.png"></p>
+<p>Fig 1. Overall Framework</p>
+<p><strong>Proposed Framework</strong><br>
+We proposed <strong>FOCI (Finding Optimal Contextual Instances)</strong>, a lightweight rationale-readout module that operates on top of <strong>frozen MIL backbones</strong> without modifying their original inference pipeline. Instead of retraining the classifier, FOCI learns to identify compact tile subsets that preserve the original model prediction.</p>
+<h4>FOCI Architecture</h4>
+<p><img alt="Figure 2. FOCI Architecture" src="../assets/compact-rationales/image_2.png"></p>
+<p>Figure 2. FOCI Architecture</p>
+<p><strong>Key Components</strong></p>
+<ul>
+<li>Frozen MIL Backbone</li>
+<li>FOCI Rationale Readout</li>
+<li>Keep/Drop Tile Selection</li>
+<li>Sequential Reveal Protocol (SRP)</li>
+<li>Selection Headroom Index (SHI)</li>
+</ul>
+<p><strong>Evaluation Strategy</strong></p>
+<p>Rather than evaluating only slide-level classification performance, the study introduced new rationale evaluation metrics:</p>
+<ul>
+<li>Minimum Sufficient K (MSK)</li>
+<li>Area Under K-Confidence Curve (AUKC)</li>
+<li>Reach</li>
+<li>Selection Headroom Index (SHI)</li>
+</ul>
+<p>These metrics quantify how efficiently a model's prediction can be reconstructed from progressively revealed image tiles.</p>
+<h2><strong>📊 What were the results?</strong></h2>
+<h4>4. Results</h4>
+<ul>
+<li><strong>Finding 1</strong>: Compact rationale availability is highly <strong>architecture-dependent</strong>, rather than being an inherent property of all MIL models.</li>
+<li><strong>Finding 2:</strong> Transformer-based and multi-branch attention models (e.g., TransMIL, ACMIL) exhibited positive selection headroom, indicating that their predictions could be recovered from substantially smaller tile subsets.</li>
+<li><strong>Finding 3</strong>: Attention pooling methods often entered a <strong>selection saturation regime</strong>, leaving little room for further rationale compression despite strong classification performance. ‘</li>
+<li><strong>Finding 4</strong>: High slide-level AUC did <strong>not necessarily imply</strong> compact or faithful rationales, demonstrating that prediction accuracy and explanation quality should be evaluated independently.</li>
+</ul>
+<p><img alt="Table 1. Main Performance" src="../assets/compact-rationales/image_3.png"></p>
+<p>Table 1. Main Performance</p>
+<p><img alt="Figure 3. Main performance" src="../assets/compact-rationales/image_4.png"></p>
+<p>Figure 3. Main performance</p>
+<h4>5. Discussion &amp; Limitation</h4>
+<p><strong>Discussion</strong></p>
+<ul>
+<li>Introduced the concept of <strong>Selection Headroom</strong> as a new perspective for evaluating explainability.</li>
+<li>Demonstrated that explanation quality depends on model architecture, even when predictive performance is similar.</li>
+<li>Proposed an architecture-agnostic auditing framework applicable to existing frozen MIL models.</li>
+</ul>
+<p><strong>Limitation</strong></p>
+<ul>
+<li>Evaluated only model-output sufficiency rather than clinical correctness.</li>
+<li>Focused on binary pathology classification tasks.</li>
+<li>Additional validation with larger clinical datasets and human reader studies is needed.</li>
+</ul>
+<h2><strong>👩‍💻 What was my contribution?</strong></h2>
+<p>Co-Author</p>
+<ul>
+<li>Literature review on WSI-MIL and explainable AI</li>
+<li>Experimental implementation and validation</li>
+<li>Performance analysis across multiple MIL backbones</li>
+<li>Figure and result visualization</li>
+<li>Manuscript editing and discussion refinement</li>
+</ul>
+<h2>💡 What did I learn?</h2>
+<p><strong>Technical Insight</strong></p>
+<p>이 연구에 공저자로 참여하면서, “해석가능성”에 대한 이해도가 확장되었습니다. 설명의 quality는 분류 성능과는 독립적으로 평가되어야 하고, 새로운 평가 프로토콜을 통해 기존 지표를 넘어 모델이 동작하는데 있어 숨겨진 component들을 밝혀낼 수 있다는 것을 알게 되었습니다.<br>
+This project broadened my understanding of <strong>post-hoc interpretability</strong> in computational pathology. I learned that explanation quality should be evaluated independently from classification performance and that new evaluation protocols can reveal hidden properties of model behavior beyond conventional metrics.</p>
+<p><strong>Research Insight</strong></p>
+<p>공저자로 연구에 참여하면서 협업 연구를 다른 관점에서 경험할 수 있었습니다. 개별적인 기술적 기여가 어떻게 더 범위가 큰 프로젝트에 통합되는지, 그리고 엄격한 실험 설계, 심사위원 중심의 평가, 명확한 과학적 스토리틸렝이 영향력 있는 AI 연구 논문 게재를 위해 얼마나 중요한지 체감할 수 있었습니다.<br>
+Participating as a co-author allowed me to experience collaborative research from a different perspective. I learned how individual technical contributions integrate into a larger research project and how rigorous experimental design, reviewer-oriented evaluation, and clear scientific storytelling are essential for publishing high-impact AI research.</p>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

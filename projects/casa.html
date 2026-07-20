@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CASA: Concept-Attention Semantic Alignment Framework — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Conference · MICCAI 2026</div>
+  <h1>CASA: Concept-Attention Semantic Alignment Framework</h1>
+  <div class="metachips"><span class="chip">Co-First Author</span><span class="chip">VLM · MIL</span><span class="chip">Computational Pathology</span><span class="status reject">Reject (Reviewed)</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<p><img alt="Thumnail. Overall Framework" src="../assets/casa/fig_1_overview.png"></p>
+<p>Thumnail. Overall Framework</p>
+<div class="callout">
+<p>💡</p>
+<p><strong>Summary</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>Duration</strong></th>
+<th>2025.12 - 2026.02</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Role</strong></td>
+<td>Co-First Author</td>
+</tr>
+<tr>
+<td>Research Area</td>
+<td>Computational Pathology</td>
+</tr>
+<tr>
+<td>Keywords</td>
+<td>VLM · MIL · Semantic Alignment · Digital Pathology</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Reject (MICCAI 2026 Submitted, Reviewed)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>🎯 What problem did I solve?</h3>
+<h4>1. Background</h4>
+<p>Attention-based Multiple Instance Learning (MIL)은 Whole Slide Image 분석에서 널리 사용되지만, attention이 병리학적으로 의미 있는 영역이 아니라 <strong>통계적으로만 예측력이 높은 영역</strong>에 집중하는 문제가 있습니다. 이러한 attention의 불안정성은 병원 간 데이터 분포가 달라질 때 일반화 성능 저하로 이어질 수 있습니다.</p>
+<p><strong>❓ Research Questions</strong></p>
+<ul>
+<li>Can semantic knowledge guide MIL attention toward clinically meaningful regions?</li>
+<li>Can semantic alignment improve cross-institution generalization?</li>
+<li>Which level of semantic alignment contributes most to robust MIL learning?</li>
+</ul>
+<p><strong>🎯 Objective</strong></p>
+<p>To develop a <strong>backbone-agnostic semantic regularization framework (CASA)</strong> that aligns MIL attention with pathology concepts derived from vision-language models while preserving the original MIL architecture.</p>
+<h3>🧠 How did I solve it?</h3>
+<h4>2. Dataset</h4>
+<ul>
+<li>Internal Yonsei Cohort (489 WSIs)</li>
+<li>Institutional External Cohort</li>
+<li>BCR-Net External Cohort</li>
+</ul>
+<p>총 <strong>3개의 독립 코호트</strong>를 활용하여 기관 간 일반화 성능을 평가했습니다.</p>
+<h4>3. Methods</h4>
+<p><img alt="fig_1_overview.png" src="../assets/casa/fig_1_overview_1.png"></p>
+<h4>Concept-guided Semantic Alignment</h4>
+<p>Vision-Language Model에서 생성한 병리학 개념 임베딩을 활용하여 attention을 직접 regularization하는 프레임워크입니다. <br>
+기존 MIL backbone은 변경하지 않고 다음 세 가지 수준에서 semantic alignment를 수행했습니다.</p>
+<hr>
+<div class="callout">
+<p>💡</p>
+<h4><strong>🪄 Method highlights</strong></h4>
+<p>✔ Backbone-agnostic Framework<br>
+✔ Vision-Language Model Integration<br>
+✔ Concept-guided Attention Learning<br>
+✔ Multi-level Semantic Alignment<br>
+✔ Cross-institution Evaluation<br>
+✔ Component Ablation Study</p>
+</div>
+<p><strong>Semantic Concept Modeling</strong></p>
+<p>To provide clinically meaningful supervision, pathology concepts were defined based on the <strong>WHO breast tumor classification</strong> and encoded into a shared image–text embedding space using a pretrained Vision-Language Model.</p>
+<p>Each image patch was compared with these concept embeddings to estimate its semantic relevance, creating a concept-guided reference for attention learning.</p>
+<p><strong>📌 Multi-level Semantic Alignment</strong><br>
+CASA introduces semantic constraints at three complementary levels.</p>
+<ul>
+<li><strong>Distribution-level Alignment</strong>: Aligns the attention distribution with concept-derived semantic relevance, encouraging the model to focus on pathology-related regions instead of statistically correlated artifacts.</li>
+<li><strong>Feature-level Alignment:</strong> Regularizes patch-level feature representations toward concept embeddings within the VLM semantic space, improving semantic consistency across instances.</li>
+<li><strong>Global-level Alignment</strong>: Constrains the slide-level representation to preserve overall semantic coherence while maintaining compatibility with different MIL backbones.</li>
+</ul>
+<hr>
+<h4>Experimental Design</h4>
+<ul>
+<li>6 Attention-based MIL Backbones<ul>
+<li>CLAM</li>
+<li>DSMIL</li>
+<li>ABMIL</li>
+<li>TransMIL</li>
+<li>DTFD-MIL</li>
+<li>CLAM-MB</li>
+</ul>
+</li>
+</ul>
+<h4>Component Analysis</h4>
+<p>다음 요소들의 영향을 독립적으로 분석했습니다.</p>
+<ul>
+<li>Warm-up Strategy</li>
+<li>Top-K Selection</li>
+<li>Feature Alignment</li>
+<li>Global Alignment</li>
+<li>Concept Tier Design</li>
+</ul>
+<h3>📊 What were the results?</h3>
+<ul>
+<li><strong>Finding 1:</strong> Semantic alignment generally improved robustness under cross-institution evaluation while preserving compatibility with existing MIL architectures.</li>
+<li><strong>Finding 2:</strong> Feature-level semantic alignment (Lfeat) consistently contributed the largest performance gains across multiple MIL backbones.</li>
+<li><strong>Finding 3:</strong> Global semantic alignment improved in-domain performance but required conservative tuning under severe domain shift.</li>
+<li><strong>Finding 4:</strong> Different concept hierarchies exhibited backbone-dependent behavior, suggesting that semantic concept design should be optimized for each application rather than universally applied.</li>
+</ul>
+<p><img alt="fig_2_topk.png" src="../assets/casa/fig_2_topk.png"></p>
+<p><strong>Discussion</strong></p>
+<ul>
+<li>Semantic information from VLMs can serve as an effective inductive bias for attention-based MIL.</li>
+<li>Architecture modification is not necessary to incorporate semantic guidance.</li>
+<li>Multi-level alignment provides a flexible framework applicable to various MIL backbones.</li>
+</ul>
+<p><strong>Limitations</strong></p>
+<ul>
+<li>Performance improvements remained modest across several backbones.</li>
+<li>Effectiveness depended on backbone architecture and domain characteristics.</li>
+<li>Concept quality and VLM representation significantly influenced alignment performance.</li>
+<li>Further validation on larger multi-institutional cohorts is required.</li>
+</ul>
+<h3>👩‍💻 What was my contribution?</h3>
+<ul>
+<li>Research idea formulation</li>
+<li>Literature review on MIL and Vision-Language Models</li>
+<li>CASA framework design</li>
+<li>Semantic concept engineering</li>
+<li>Experimental design</li>
+<li>Component ablation studies</li>
+<li>Cross-institution evaluation</li>
+<li>Manuscript writing</li>
+</ul>
+<h3><strong>💡 What did I learn?</strong></h3>
+<p><strong>Technical Insight</strong></p>
+<p>모델 성능 향상은 단순히 새로운 아키텍처를 설계하는 것 뿐만 아니라, 의미있는 “귀납적 편향”을 도입하는 것도 중요하다는 것을 체감할 수 있었습니다. VLM의 Semantic 정보를 아키텍처의 수정없이 기존 MIL Framework에 통합하는 방법과, 어떤 구성 요소가 일반화에 실제로 기여하는지 이해하기 위해 신중한 ablation study가 필수적이라는 것 또한 체득할 수 있었습니다.<br>
+Developing CASA taught me that <strong>improving model performance is not only about designing new architectures but also about introducing meaningful inductive biases</strong>. I learned how semantic information from vision-language models can be incorporated into existing MIL frameworks without architectural modifications, and how careful ablation studies are essential for understanding which components truly contribute to generalization.</p>
+<p><strong>Research Insight</strong></p>
+<p>Confernece에 논문을 제출하고, 심사위원들의 점수와 피드백을 받으면서 “독창성”과 “실증적 근거의 균형”의 중요성을 다시 한 번 깨달았습니다. 제안된 프레임워크는 해석 가능한 의미 정렬 전략을 도입했지만, 다양한 환경에서 일관된 성능 향상을 보여주고, 각 설계 선택의 실질적인 의미를 명확하게 설명하는 것이 새로운 방법을 제안하는 것만큼 중요하다는 것을 알게 되었습니다.<br>
+비록 미채택된 프로젝트였으나, 저자와 심사위원 모두의 관점에서 연구를 비판적으로 스스로 평가하는 관점을 체득할 수 있었습니다.<br>
+Submitting this work to MICCAI and receiving reviewer feedback reinforced the importance of <strong>balancing novelty with empirical evidence</strong>. While the proposed framework introduced an interpretable semantic alignment strategy, I realized that demonstrating consistent improvements across diverse settings and clearly articulating the practical significance of each design choice are just as important as proposing a new method. This experience strengthened my ability to critically evaluate research from both the author's and reviewer's perspectives.</p>
+<h3>Appendix.</h3>
+<ul>
+<li>Reviewer Feedback - Overall Score: <strong>2 / 4 / 2</strong></li>
+</ul>
+<p><strong>Major Comments</strong></p>
+<ul>
+<li>Limited performance improvement across some backbones</li>
+<li>Need for stronger empirical validation</li>
+<li>Practical impact should be demonstrated more clearly</li>
+</ul>
+<p>→ Receiving reviewer feedback helped me recognize the gap between a technically interesting idea and a publication-ready contribution. Rather than viewing the rejection as a failure, I used the reviews to identify weaknesses in experimental validation and the clarity of the paper's narrative. This experience improved both my research design and scientific writing skills, and it continues to shape the next iteration of this work.</p>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

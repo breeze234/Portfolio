@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B2B 영업기회 창출 예측 모델 개발 — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Project · Machine Learning</div>
+  <h1>B2B 영업기회 창출 예측 모델 개발</h1>
+  <div class="metachips"><span class="chip">ML · Programming</span><span class="chip">데이터 전처리 · 모델링</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<h3>🪢 전체 Link</h3>
+<p><a href="https://app.notion.com/p/LG-Aimers_MQL-B2B-10ee8314993e448286ccdac98ebeb989?pvs=21">LG Aimers_MQL 데이터 기반 B2B 영업기회 창출 예측 모델 개발 </a> </p>
+<h3>🔎 상세 내용</h3>
+<p><strong>고객 지수 산출을 위해 MQL 고객 정보를 활용해 영업 전환 성공 여부를 예측하는 AI 모델 개발</strong></p>
+<ol>
+<li>
+<p><strong>데이터 파악</strong></p>
+<p>칼럼 30개, Y-True:1, False0, 텍스트 데이터: 요청-메시지 영어로 작성됨</p>
+</li>
+<li>
+<p><strong>데이터 전처리</strong></p>
+<p>결측치 채우기, 범주형 변수 → 수치로 인코딩, 가공변수 생성</p>
+<ul>
+<li>
+<p>Ex 1. 특정 사업부 영역 칼럼 2개 → 1개의 가공변수로 통합</p>
+<table>
+<thead>
+<tr>
+<th>id_strategic_ver</th>
+<th>(도메인 지식) 특정 사업부(Business Unit이 ID일 때), 특정 사업 영역(Vertical Level1)에 대해 가중치를 부여</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it_strategic_ver</td>
+<td>(도메인 지식) 특정 사업부(Business Unit이 IT일 때), 특정 사업 영역(Vertical Level1)에 대해 가중치를 부여</td>
+</tr>
+</tbody>
+</table>
+<h3>칼럼 4. ID<em>0.4 + IT</em>0.6 = strategic_ver로 통합</h3>
+<p><code>python
+(df_train["id_strategic_ver"].fillna(0)*0.4).value_counts()</code></p>
+<p><code>python
+0.0    55855
+0.4     3444
+Name: id_strategic_ver, dtype: int64</code></p>
+<p>```python</p>
+<h1>새로운 컬럼 생성 및 계산</h1>
+<p>df_train['strategic_ver']= df_train["id_strategic_ver"].fillna(0) * 0.4 + df_train['it_strategic_ver'].fillna(0) * 0.6</p>
+<p>df_train['strategic_ver'].value_counts()<br>
+```</p>
+<p><code>python
+0.0    54734
+0.4     3444
+0.6     1121
+Name: strategic_ver, dtype: int64</code></p>
+<p><code>python
+df_train.drop(["id_strategic_ver","it_strategic_ver"], axis=1, inplace=True)
+df_train.drop(['business_unit'], axis = 1, inplace = True) #어차피 strategic이랑 중복이니 삭제</code></p>
+<p>```python</p>
+<h1>test 적용</h1>
+<p>df_test['strategic_ver']= df_test["id_strategic_ver"].fillna(0) * 0.4 + df_test['it_strategic_ver'].fillna(0) * 0.6</p>
+<p>df_test.drop(["id_strategic_ver","it_strategic_ver",'business_unit'], axis=1, inplace=True)</p>
+<p>df_train.columns #확인<br>
+```</p>
+<p><code>python
+Index(['bant_submit', 'com_reg_ver_win_rate', 'customer_type', 'enterprise',
+       'historical_existing_cnt', 'lead_desc_length', 'inquiry_type',
+       'product_category', 'expected_timeline', 'ver_cus', 'ver_pro',
+       'ver_win_rate_x', 'ver_win_ratio_per_bu', 'business_area',
+       'response_corporate', 'lead_owner', 'is_converted', 'strategic_ver'],
+      dtype='object')</code></p>
+</li>
+<li>
+<p>Ex 2. 국가별 코드 → 대륙별 코드로 가공변수 생성</p>
+<h3>칼럼 7. response_corporate 전처리</h3>
+<p><code>python
+unique_response_corporate = df_train['response_corporate'].unique()
+print(unique_response_corporate)</code></p>
+<p><code>python
+['LGEPH' 'LGEIL' 'LGEAF' 'LGESJ' 'LGESL' 'LGESP' 'LGEGF' 'LGESA' 'LGEUS'
+ 'LGECB' 'LGEMS' 'LGEEG' 'LGEEF' 'LGEAP' 'LGEIN' 'LGEUK' 'LGEKR' 'LGEPS'
+ 'LGECI' 'LGECL' 'LGETK' 'LGELF' 'LGEPT' 'LGEPR' 'LGEDG' 'LGERO' 'LGEMK'
+ 'LGEPL' 'LGECZ' 'LGEES' 'LGEAR' 'LGEHK' 'LGEML' 'LGEJP' 'LGEHS' 'LGEAS'
+ 'LGEYK' 'LGEIS' 'LGEBN' 'LGEFS' 'LGESW' 'LGEMC' 'LGEAG' 'LGEEB' 'LGETH'
+ 'LGEVH' 'LGECH' 'LGELA' 'LGETT' 'LGERA' 'LGEUR' 'LGEIR' 'LGEBT']</code></p>
+<p>```python</p>
+<h1>대륙별로 response_corporate 값을 매핑하는 딕셔너리 생성</h1>
+<p>def map_to_continent(value):<br>
+    mapping = {<br>
+        'EU': ['LGEBN', 'LGEFS', 'LGEIS', 'LGEPH', 'LGEIL', 'LGEDG', 'LGEUK', 'LGEPS', 'LGETK', 'LGELF', 'LGEPT', 'LGEPR', 'LGERO', 'LGEMK', 'LGEPL', 'LGECZ', 'LGEES', 'LGEHS', 'LGEEB', 'LGETT'],<br>
+        'AS_PC': ['LGEPH', 'LGEIL', 'LGESL', 'LGEKR', 'LGEAP', 'LGEIN', 'LGEHK', 'LGEML', 'LGEJP', 'LGETH', 'LGEVH', 'LGECH'],<br>
+        'ME_AF': ['LGEAF', 'LGESJ', 'LGEGF', 'LGESA', 'LGEEG', 'LGEEF', 'LGETK', 'LGELF', 'LGEAS', 'LGEMC', 'LGEAR', 'LGEIR'],<br>
+        'N_AM': ['LGEUS', 'LGEMS', 'LGECI'],<br>
+        'L_AM': ['LGECL', 'LGESP', 'LGECB', 'LGEPS', 'LGECB', 'LGEMS', 'LGEMC', 'LGEAG', 'LGEPS', 'LGEEB', 'LGESW', 'LGEYK'],<br>
+        'R_CIS': ['LGERA', 'LGEUR', 'LGELA'],<br>
+        'Unknown': ['LGEBT']<br>
+    }</p>
+<pre><code>for continent, companies in mapping.items():
+    if value in companies:
+        return continent
+return value
+</code></pre>
+<p>```</p>
+<p>```python</p>
+<h1>df_train DataFrame에서 expected_timeline 열의 모든 값을 문자열로 변환</h1>
+<p>df_train['response_corporate'] = df_train['response_corporate'].astype(str)</p>
+<h1>데이터프레임에 함수 적용</h1>
+<p>df_train['response_corporate'] = df_train['response_corporate'].apply(map_to_continent)</p>
+<p>df_train['response_corporate'].value_counts()<br>
+```</p>
+<p><code>python
+EU         29037
+L_AM       12846
+N_AM        8986
+ME_AF       5592
+AS_PC       2826
+R_CIS         11
+Unknown        1
+Name: response_corporate, dtype: int64</code></p>
+<p>```python</p>
+<h1>test 적용</h1>
+<p>df_test['response_corporate'] = df_test['response_corporate'].astype(str)</p>
+<h1>데이터프레임에 함수 적용</h1>
+<p>df_test['response_corporate'] = df_test['response_corporate'].apply(map_to_continent)</p>
+<p>df_test['response_corporate'].value_counts()  #확인<br>
+```</p>
+<p><code>python
+EU       1953
+L_AM     1283
+N_AM     1207
+ME_AF     457
+AS_PC     371
+Name: response_corporate, dtype: int64</code></p>
+</li>
+<li>
+<p>Ex 3. 원하는 수리 기간 → ‘기타’로 줄글로 작성된 의견들 통합</p>
+<h3>칼럼 8. expected_timeline 전처리</h3>
+<p>```python</p>
+<h1>expected timeline 문구 대체 시도</h1>
+<h1>0-3:0, 3-6:1, 6-9:2, 9-12:3, 12이상:4</h1>
+<p>unique_expected_timeline = df_train['expected_timeline'].unique()</p>
+<h1>대체할 값들</h1>
+<p>replacement_values = {<br>
+    'less than 3 months': '0-3 months',<br>
+    '3 months ~ 6 months': '3-6 months',<br>
+    '6 months ~ 9 months': '6-9 months',<br>
+    '9 months ~ 1 year': '9 months - 1 year',<br>
+    'more than a year': 'more than 1 year'<br>
+}</p>
+<h1>비슷한 문구를 찾고 해당하는 값으로 대체하는 함수 정의</h1>
+<p>def replace_similar_values(text):<br>
+    if isinstance(text, str):<br>
+        # 대소문자 및 공백을 무시하고 대체할 값 찾기<br>
+        for pattern, replacement in replacement_values.items():<br>
+            if re.search(re.compile(re.escape(pattern), re.IGNORECASE), text):<br>
+                return replacement<br>
+        # 대체할 값이 없는 경우 'etc'로 분류<br>
+        return 'etc'<br>
+    else:<br>
+        return 'etc'  # NaN 또는 기타 형태의 값인 경우 'etc'로 분류</p>
+<p>```</p>
+<p>```python<br>
+import re</p>
+<h1>df_train DataFrame에서 expected_timeline 열의 모든 값을 문자열로 변환</h1>
+<p>df_train['expected_timeline'] = df_train['expected_timeline'].astype(str)</p>
+<h1>expected_timeline 열의 모든 값을 변경</h1>
+<p>df_train['expected_timeline'] = df_train['expected_timeline'].apply(replace_similar_values)</p>
+<p>df_train['expected_timeline'].unique()    #확인<br>
+```</p>
+<p>```python</p>
+<h1>test 적용</h1>
+<p>df_test['expected_timeline'] = df_test['expected_timeline'].astype(str)</p>
+<h1>expected_timeline 열의 모든 값을 변경</h1>
+<p>df_test['expected_timeline'] = df_test['expected_timeline'].apply(replace_similar_values)</p>
+<p>print(df_test['expected_timeline'].value_counts())   #확인<br>
+```</p>
+<p><code>python
+etc                  2408
+0-3 months           1734
+3-6 months            426
+more than 1 year      272
+9 months - 1 year     264
+6-9 months            167
+Name: expected_timeline, dtype: int64</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>레이블 인코딩<br>
+전처리 시 수정한 컬럼, 새로 생성한 컬럼이 str 타입일 경우 실행 <br>
+- 코드</p>
+<p>```python<br>
+def label_encoding(series: pd.Series) -&gt; pd.Series:<br>
+    """범주형 데이터를 시리즈 형태로 받아 숫자형 데이터로 변환합니다."""</p>
+<pre><code>my_dict = {}
+
+# 모든 요소를 문자열로 변환
+series = series.astype(str)
+
+for idx, value in enumerate(sorted(series.unique())):
+    my_dict[value] = idx
+series = series.map(my_dict)
+
+return series
+</code></pre>
+<p>```</p>
+<p>```python</p>
+<h1>str 변수 인코딩</h1>
+<p>label_columns = [<br>
+    "business_area",<br>
+    'lead_desc_length',<br>
+    "customer_type",<br>
+    "enterprise",<br>
+    "inquiry_type",<br>
+    "response_corporate",<br>
+    "product_category",<br>
+    "expected_timeline",<br>
+]</p>
+<p>df_all = pd.concat([df_train[label_columns], df_test[label_columns]])</p>
+<p>for col in label_columns:<br>
+    df_all[col] = label_encoding(df_all[col])<br>
+```</p>
+<p><code>python
+for col in label_columns:
+    df_train[col] = df_all.iloc[: len(df_train)][col]
+    df_test[col] = df_all.iloc[len(df_train) :][col]</code></p>
+<p>```python</p>
+<h1>학습데이터셋, 평가 데이터셋 분류</h1>
+<p>x_train, x_val, y_train, y_val = train_test_split(<br>
+    df_train.drop("is_converted", axis=1),<br>
+    df_train["is_converted"],<br>
+    test_size=0.2,<br>
+    shuffle=True,<br>
+    random_state=684050,<br>
+)<br>
+```</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>상관계수 파악</p>
+<h3>상관계수 파악</h3>
+<p>```python<br>
+import seaborn as sns<br>
+import matplotlib.pyplot as plt</p>
+<h1>데이터프레임의 상관 행렬 계산</h1>
+<p>corr = df_train.corr()</p>
+<h1>히트맵 그리기</h1>
+<p>plt.figure(figsize=(10, 8))<br>
+sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f")<br>
+plt.title('Correlation Heatmap')<br>
+plt.show()</p>
+<p>```</p>
+</li>
+</ul>
+<p><img alt="Untitled" src="../assets/b2b/Untitled.png"></p>
+<ol>
+<li>모델 실험</li>
+</ol>
+<h3>모델 성능 함수 정의</h3>
+<pre><code class="language-python">### 모델 성능 보기
+
+def get_clf_eval(y_test, y_pred=None):
+    confusion = confusion_matrix(y_test, y_pred, labels=[True, False])
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, labels=[True, False])
+    recall = recall_score(y_test, y_pred)
+    F1 = f1_score(y_test, y_pred, labels=[True, False])
+
+    print(&quot;오차행렬:\n&quot;, confusion)
+    print(&quot;\n정확도: {:.4f}&quot;.format(accuracy))
+    print(&quot;정밀도: {:.4f}&quot;.format(precision))
+    print(&quot;재현율: {:.4f}&quot;.format(recall))
+    print(&quot;F1: {:.4f}&quot;.format(F1))
+</code></pre>
+<ul>
+<li>XGBoost</li>
+</ul>
+<p>오차행렬:<br>
+[[  507   480]<br>
+[  198 10675]]</p>
+<p>정확도: 0.9428<br>
+정밀도: 0.7191<br>
+재현율: 0.5137<br>
+<strong>F1: 0.5993</strong></p>
+<ul>
+<li>DecisionTree</li>
+</ul>
+<p>오차행렬:<br>
+[[  618   369]<br>
+[  326 10547]]</p>
+<p>정확도: 0.9414<br>
+정밀도: 0.6547<br>
+재현율: 0.6261<br>
+<strong>F1: 0.6401</strong></p>
+<ul>
+<li>PCA 후 DecisionTree</li>
+</ul>
+<p>오차행렬:<br>
+[[  556   431]<br>
+[  409 10464]]</p>
+<p>정확도: 0.9292<br>
+정밀도: 0.5762<br>
+재현율: 0.5633<br>
+<strong>F1: 0.5697</strong></p>
+<ul>
+<li>RFE 후 DecisionTree</li>
+</ul>
+<p>오차행렬:<br>
+[[  618   369]<br>
+[  311 10562]]</p>
+<p>정확도: 0.9427<br>
+정밀도: 0.6652<br>
+재현율: 0.6261<br>
+<strong>F1: 0.6451</strong></p>
+<ul>
+<li>RandomForest</li>
+</ul>
+<p>오차행렬:<br>
+[[  544   443]<br>
+[  203 10670]]</p>
+<p>정확도: 0.9455<br>
+정밀도: 0.7282<br>
+재현율: 0.5512<br>
+<strong>F1: 0.6275</strong></p>
+<ul>
+<li>Ensemble 1_Randomforest+Gradientboosting+XGBoost+LightBoost <strong>F1: 0.5885</strong></li>
+<li>Ensemble2_Randomforet + GradientBoost + LogisticRegression + Decisiontree <strong>F1: 0.5567</strong></li>
+</ul>
+<p>→ Decisiontree val_data의 sum값이 가장 높게 나와서 <strong>decisiontree 하이퍼 파라미터 조정하는 걸</strong>로 시도</p>
+<h3>최종 제출</h3>
+<ul>
+<li>Decision tree - max_features 조정</li>
+</ul>
+<p>오차행렬:<br>
+[[  618   369]<br>
+[  313 10560]]</p>
+<p>정확도: 0.9425<br>
+정밀도: 0.6638<br>
+재현율: 0.6261<br>
+<strong>F1: 0.6444</strong></p>
+<p>877</p>
+<h3>💡 깨달은 점</h3>
+<ul>
+<li>DecisionTree모델로 가장 높은 성능이 나왔어서, 데이터 전처리에 시간을 더 쏟았어야 된다고 생각함.</li>
+<li>Ensemble 모델이 어디서나 늘 높은 성능을 보이는 것은 아님.</li>
+<li>주어진 데이터에 대해 얼마나 이해하고 있는지가 적합한 모델을 설계하는 데에 도움이 된다는 것을 앎.</li>
+</ul>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

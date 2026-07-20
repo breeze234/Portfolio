@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systematic Evaluation of 168 SSL–MIL Combinations for Oncotype DX Prediction — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">M.S. Graduation Thesis</div>
+  <h1>Systematic Evaluation of 168 SSL–MIL Combinations for Oncotype DX Prediction</h1>
+  <div class="metachips"><span class="chip">First Author</span><span class="chip">SSL · MIL</span><span class="chip">Digital Pathology</span><span class="status thesis">Accepted (Thesis)</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<p><img alt="Thumnail. Overall Framework" src="../assets/ssl-mil/image.png"></p>
+<p>Thumnail. Overall Framework</p>
+<div class="callout">
+<p>💡</p>
+<p><strong>Summary</strong></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_1.png"></p>
+<table>
+<thead>
+<tr>
+<th><strong>Duration</strong></th>
+<th>2025.10 - 2026.07</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Role</strong></td>
+<td>First Author</td>
+</tr>
+<tr>
+<td>Research Area</td>
+<td>Computational Pathology</td>
+</tr>
+<tr>
+<td>Keywords</td>
+<td>MIL · SSL · Digital Pathology · Generalization</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Accepted, M.S. Thesis</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2>What problem did I solve?</h2>
+<h3>1. Background</h3>
+<p><img alt="image.png" src="../assets/ssl-mil/image_2.png"></p>
+<p>Oncotype DX is expensive and not easily accessible, making treatment decisions difficult in many clinical settings.</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_3.png"></p>
+<h3>❓Research Questions</h3>
+<ul>
+<li>Which is more important: Feature Extractor or MIL?</li>
+<li>Does SSL consistently improve performance?</li>
+<li>Which architecture generalizes best across institutions?</li>
+</ul>
+<h3>🎯 Objective</h3>
+<p>Systematically evaluate SSL and MIL combinations for robust and generalizable WSI-based Oncotype DX prediction.</p>
+<h2>How did I solve it?</h2>
+<h3>2. Dataset</h3>
+<p><img alt="image.png" src="../assets/ssl-mil/image_4.png"></p>
+<table>
+<thead>
+<tr>
+<th>Cohort</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internal</td>
+<td>Training/Test</td>
+</tr>
+<tr>
+<td>External</td>
+<td>External Test</td>
+</tr>
+<tr>
+<td>BCRNet</td>
+<td>External Test, Cross-domain</td>
+</tr>
+<tr>
+<td>TCGA</td>
+<td>External Test, Cross-resource</td>
+</tr>
+</tbody>
+</table>
+<h3>3. Method</h3>
+<p>Pipeline: Whole Slide Image → Feature Extraction → MIL → Prediction</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_5.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_6.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_7.png"></p>
+<ul>
+<li>
+<p>Experimental Design</p>
+<p><code>markdown
+12 Feature Extractors × 14 MIL Models = 168 Experiments</code></p>
+</li>
+<li>
+<p>Evaluation strategy</p>
+<p><code>markdown
+3-fold Cross Validation
+↓
+3 Random Seeds
+↓
+9 Ensemble Models
+↓
+4 Independent Test Cohorts</code></p>
+</li>
+</ul>
+<h2>What were the results?</h2>
+<h3>4. Results</h3>
+<ul>
+<li><strong>Finding 1</strong> <br>
+: Feature Extractor selection had a larger impact than MIL architecture under external validation.</li>
+<li><strong>Finding 2</strong><br>
+: Attention-based MIL improved cross-institution generalization.</li>
+<li><strong>Finding 3</strong><br>
+: SSL did not consistently outperform supervised models across all cohorts.</li>
+<li><strong>Finding 4</strong><br>
+: Low-risk class remained difficult in 3-class prediction.</li>
+</ul>
+<p><img alt="image.png" src="../assets/ssl-mil/image_8.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_9.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_10.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_11.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_12.png"></p>
+<h3>5. Discussion &amp; Limitation</h3>
+<p><img alt="image.png" src="../assets/ssl-mil/image_13.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_14.png"></p>
+<h2>What was my contribution?</h2>
+<p>✅ Literature Review<br>
+✅ Dataset Curation<br>
+✅ WSI Preprocessing<br>
+✅ SSL Feature Extraction<br>
+✅ MIL Benchmark<br>
+✅ Experimental Design<br>
+✅ Statistical Analysis<br>
+✅ Visualization<br>
+✅ Thesis Writing</p>
+<h2>What did I learn?</h2>
+<p><strong>Technical Insight</strong></p>
+<ul>
+<li>Model architecture alone does not guarantee generalization.</li>
+<li>Representation learning plays a larger role than expected.</li>
+</ul>
+<p><strong>Research Insight</strong></p>
+<ul>
+<li>External validation changes the ranking of models.</li>
+<li>Evaluation protocol is as important as model development.</li>
+</ul>
+<p><strong>Future work</strong></p>
+<ul>
+<li>Pathology Foundation Models</li>
+<li>Multimodal Learning</li>
+<li>Better Multiclass Learning</li>
+<li>Clinical Integration</li>
+</ul>
+<h3>Appendix.</h3>
+<ul>
+<li>
+<p>Attention Visualization</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_15.png"></p>
+</li>
+<li>
+<p>Related works</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_16.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_17.png"></p>
+</li>
+<li>
+<p>Feature Extractor - Supplementary</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_18.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_19.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_20.png"></p>
+</li>
+<li>
+<p>Multiple Instance Learning - Supplementary</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_21.png"></p>
+</li>
+<li>
+<p>Preprocessing: Patch Extraction</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_22.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_23.png"></p>
+</li>
+<li>
+<p>Metric - AUROC Range, Silhouette Coefficient</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_24.png"></p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_25.png"></p>
+</li>
+<li>
+<p>Information Utilization Gap</p>
+<p><img alt="image.png" src="../assets/ssl-mil/image_26.png"></p>
+</li>
+</ul>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

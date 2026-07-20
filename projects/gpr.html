@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPR 데이터를 이용한 매설물 탐지모델 — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Project · CNN</div>
+  <h1>GPR 데이터를 이용한 매설물 탐지모델</h1>
+  <div class="metachips"><span class="chip">ToyProject</span><span class="chip">CNN · ResNet</span><span class="chip">데이터 전처리 · 모델링</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<h3>🪢 데이터 출처</h3>
+<p>https://github.com/rpl-cmu/CMU-GPR-Dataset</p>
+<h3>📌프로젝트 개요</h3>
+<ul>
+<li>학부과정에서 배웠던 CNN모델로 이미지 분류를 시도해보고자 함.</li>
+<li>그레이스케일 이미지가 처음 시도해보기에 적합할 듯 싶어 구글링 → 그래프의 파동이 그레이스케일로 잘 표현될 것 같다고 판단하여 GPR 이미지 시도<br>
+1. GPR 이미지 시각화<br>
+2. CNN 모델 정의<br>
+3. 추론 + ResNet 모델로 학습해보기 </li>
+</ul>
+<h2>1. 데이터 확인</h2>
+<ul>
+<li>GPR: 전자파 → 지면에 방출시켜서 → 되돌아오는 반사파를 기록한 데이터.<br>
+GPR 데이터셋: GPR 센서의 측정 결과, 측정 위치를 레이블링 함.</li>
+<li>지하에 물질이 다른게 있다? ⇒ 반사파 형태가 달라짐.</li>
+<li>뭐가 있는지는 적혀져 있는거 아님.</li>
+<li>
+<p>코드_데이터 불러오기</p>
+<p><code>python
+df = pd.read_csv("gpr_meas.csv", index_col=0)
+df.head()</code></p>
+<table>
+<thead>
+<tr>
+<th><strong>Amp_0</strong></th>
+<th><strong>Amp_1</strong></th>
+<th><strong>Amp_2</strong></th>
+<th><strong>Amp_3</strong></th>
+<th><strong>Amp_4</strong></th>
+<th><strong>Amp_5</strong></th>
+<th><strong>Amp_6</strong></th>
+<th><strong>Amp_7</strong></th>
+<th><strong>Amp_8</strong></th>
+<th><strong>Amp_9</strong></th>
+<th><strong>...</strong></th>
+<th><strong>Amp_191</strong></th>
+<th><strong>Amp_192</strong></th>
+<th><strong>Amp_193</strong></th>
+<th><strong>Amp_194</strong></th>
+<th><strong>Amp_195</strong></th>
+<th><strong>Amp_196</strong></th>
+<th><strong>Amp_197</strong></th>
+<th><strong>Amp_198</strong></th>
+<th><strong>Amp_199</strong></th>
+<th><strong>Amp_200</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Time[s]</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1.613064e+09</td>
+<td>-17.0</td>
+<td>-45.0</td>
+<td>-95.0</td>
+<td>-93.0</td>
+<td>144.0</td>
+<td>272.0</td>
+<td>-178.0</td>
+<td>14.0</td>
+<td>2119.0</td>
+<td>8765.0</td>
+<td>...</td>
+<td>-102.0</td>
+<td>-121.0</td>
+<td>-140.0</td>
+<td>-147.0</td>
+<td>-144.0</td>
+<td>-153.0</td>
+<td>-143.0</td>
+<td>-86.0</td>
+<td>-142.0</td>
+</tr>
+<tr>
+<td>1.613064e+09</td>
+<td>0.0</td>
+<td>-56.0</td>
+<td>-136.0</td>
+<td>-58.0</td>
+<td>131.0</td>
+<td>226.0</td>
+<td>-172.0</td>
+<td>65.0</td>
+<td>2456.0</td>
+<td>7835.0</td>
+<td>...</td>
+<td>-104.0</td>
+<td>-147.0</td>
+<td>-162.0</td>
+<td>-173.0</td>
+<td>-129.0</td>
+<td>-120.0</td>
+<td>-97.0</td>
+<td>-148.0</td>
+<td>-121.0</td>
+</tr>
+<tr>
+<td>1.613064e+09</td>
+<td>-67.0</td>
+<td>-117.0</td>
+<td>-194.0</td>
+<td>-107.0</td>
+<td>129.0</td>
+<td>129.0</td>
+<td>-258.0</td>
+<td>491.0</td>
+<td>3304.0</td>
+<td>8575.0</td>
+<td>...</td>
+<td>-189.0</td>
+<td>-252.0</td>
+<td>-258.0</td>
+<td>-233.0</td>
+<td>-226.0</td>
+<td>-208.0</td>
+<td>-168.0</td>
+<td>-181.0</td>
+<td>-168.0</td>
+</tr>
+<tr>
+<td>1.613064e+09</td>
+<td>-34.0</td>
+<td>-87.0</td>
+<td>-149.0</td>
+<td>-83.0</td>
+<td>99.0</td>
+<td>221.0</td>
+<td>-221.0</td>
+<td>256.0</td>
+<td>2725.0</td>
+<td>8815.0</td>
+<td>...</td>
+<td>-167.0</td>
+<td>-201.0</td>
+<td>-203.0</td>
+<td>-202.0</td>
+<td>-170.0</td>
+<td>-187.0</td>
+<td>-133.0</td>
+<td>-148.0</td>
+<td>-166.0</td>
+</tr>
+<tr>
+<td>1.613064e+09</td>
+<td>-63.0</td>
+<td>-77.0</td>
+<td>-151.0</td>
+<td>-112.0</td>
+<td>139.0</td>
+<td>222.0</td>
+<td>-127.0</td>
+<td>169.0</td>
+<td>2184.0</td>
+<td>8446.0</td>
+<td>...</td>
+<td>-174.0</td>
+<td>-169.0</td>
+<td>-223.0</td>
+<td>-263.0</td>
+<td>-223.0</td>
+<td>-208.0</td>
+<td>-188.0</td>
+<td>-190.0</td>
+<td>-209.0</td>
+</tr>
+<tr>
+<td>- 기초 통계량 확인: <code>df.describe()</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><strong>Amp_0</strong></th>
+<th><strong>Amp_1</strong></th>
+<th><strong>Amp_2</strong></th>
+<th><strong>Amp_3</strong></th>
+<th><strong>Amp_4</strong></th>
+<th><strong>Amp_5</strong></th>
+<th><strong>Amp_6</strong></th>
+<th><strong>Amp_7</strong></th>
+<th><strong>Amp_8</strong></th>
+<th><strong>Amp_9</strong></th>
+<th><strong>...</strong></th>
+<th><strong>Amp_191</strong></th>
+<th><strong>Amp_192</strong></th>
+<th><strong>Amp_193</strong></th>
+<th><strong>Amp_194</strong></th>
+<th><strong>Amp_195</strong></th>
+<th><strong>Amp_196</strong></th>
+<th><strong>Amp_197</strong></th>
+<th><strong>Amp_198</strong></th>
+<th><strong>Amp_199</strong></th>
+<th><strong>Amp_200</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.0000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>...</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+<td>3100.000000</td>
+</tr>
+<tr>
+<td>mean</td>
+<td>8.293226</td>
+<td>-33.916774</td>
+<td>-104.092258</td>
+<td>-107.942903</td>
+<td>41.350323</td>
+<td>268.614194</td>
+<td>19.322581</td>
+<td>-88.1200</td>
+<td>1393.509355</td>
+<td>6038.399355</td>
+<td>...</td>
+<td>-69.886452</td>
+<td>-75.011613</td>
+<td>-83.388065</td>
+<td>-91.415484</td>
+<td>-101.865806</td>
+<td>-114.988387</td>
+<td>-128.113226</td>
+<td>-138.872581</td>
+<td>-149.500968</td>
+</tr>
+<tr>
+<td>std</td>
+<td>82.105934</td>
+<td>80.732070</td>
+<td>73.444251</td>
+<td>60.575467</td>
+<td>49.378276</td>
+<td>31.280928</td>
+<td>121.908171</td>
+<td>229.0322</td>
+<td>624.852776</td>
+<td>1145.671881</td>
+<td>...</td>
+<td>92.647462</td>
+<td>94.478531</td>
+<td>95.802078</td>
+<td>96.770939</td>
+<td>96.807651</td>
+<td>97.504880</td>
+<td>99.857619</td>
+<td>99.864136</td>
+<td>99.245506</td>
+</tr>
+<tr>
+<td>min</td>
+<td>-710.000000</td>
+<td>-738.000000</td>
+<td>-714.000000</td>
+<td>-502.000000</td>
+<td>-93.000000</td>
+<td>107.000000</td>
+<td>-514.000000</td>
+<td>-1131.0000</td>
+<td>-600.000000</td>
+<td>2448.000000</td>
+<td>...</td>
+<td>-773.000000</td>
+<td>-816.000000</td>
+<td>-777.000000</td>
+<td>-806.000000</td>
+<td>-791.000000</td>
+<td>-807.000000</td>
+<td>-837.000000</td>
+<td>-835.000000</td>
+<td>-827.000000</td>
+</tr>
+<tr>
+<td>25%</td>
+<td>-43.000000</td>
+<td>-84.000000</td>
+<td>-151.000000</td>
+<td>-147.000000</td>
+<td>7.000000</td>
+<td>251.000000</td>
+<td>-46.000000</td>
+<td>-196.0000</td>
+<td>1050.000000</td>
+<td>5359.500000</td>
+<td>...</td>
+<td>-128.000000</td>
+<td>-136.000000</td>
+<td>-147.000000</td>
+<td>-152.000000</td>
+<td>-159.000000</td>
+<td>-170.000000</td>
+<td>-187.000000</td>
+<td>-200.250000</td>
+<td>-210.000000</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>-4.000000</td>
+<td>-48.000000</td>
+<td>-116.000000</td>
+<td>-116.000000</td>
+<td>34.000000</td>
+<td>269.000000</td>
+<td>44.000000</td>
+<td>-50.0000</td>
+<td>1356.000000</td>
+<td>5985.500000</td>
+<td>...</td>
+<td>-83.000000</td>
+<td>-91.000000</td>
+<td>-98.000000</td>
+<td>-106.000000</td>
+<td>-116.000000</td>
+<td>-128.000000</td>
+<td>-137.000000</td>
+<td>-146.000000</td>
+<td>-156.000000</td>
+</tr>
+<tr>
+<td>75%</td>
+<td>43.000000</td>
+<td>3.000000</td>
+<td>-71.000000</td>
+<td>-80.000000</td>
+<td>69.000000</td>
+<td>287.000000</td>
+<td>106.000000</td>
+<td>56.0000</td>
+<td>1681.250000</td>
+<td>6621.250000</td>
+<td>...</td>
+<td>-21.000000</td>
+<td>-20.000000</td>
+<td>-28.000000</td>
+<td>-41.750000</td>
+<td>-56.000000</td>
+<td>-73.000000</td>
+<td>-85.000000</td>
+<td>-95.000000</td>
+<td>-104.000000</td>
+</tr>
+<tr>
+<td>max</td>
+<td>365.000000</td>
+<td>307.000000</td>
+<td>228.000000</td>
+<td>170.000000</td>
+<td>262.000000</td>
+<td>552.000000</td>
+<td>377.000000</td>
+<td>1810.0000</td>
+<td>6721.000000</td>
+<td>13401.000000</td>
+<td>...</td>
+<td>297.000000</td>
+<td>290.000000</td>
+<td>297.000000</td>
+<td>286.000000</td>
+<td>317.000000</td>
+<td>322.000000</td>
+<td>337.000000</td>
+<td>290.000000</td>
+<td>247.000000</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<p>→ 뭐가 많음…  이게 뭔지 확인 ! </p>
+<p>8 rows × 201 columns</p>
+<div class="callout">
+<p>📌 200개의 반사된 주파수의 <strong>“시간별 진폭”이 저장된 것.<br>
+0번째 시간의 진폭, 1번째 시간의 진폭… 200번째 시간의 진폭</strong></p>
+</div>
+<ul>
+<li>몇개만 뽑아서 시간에 따른 값 변화를 표시해서 확인</li>
+</ul>
+<pre><code class="language-python">df[['Amp_0','Amp_10', 'Amp_100']].plot(grid='on')
+</code></pre>
+<p><img alt="Untitled" src="../assets/gpr/Untitled.png"></p>
+<p>→ 주황색(10): 급격하게 떨어지는 부분 있음. 지하에 뭔가 있다는 의미!</p>
+<p>→ 초록색(100), 파란색(0): 미미하지만 파동이 달라지고 있음.</p>
+<p>⇒ 시간에 따른 값을 표기할 수 있으니 이걸 이미지로 변환할 수 있을 것. (초음파 사진처럼)</p>
+<div class="callout">
+<p>➡️ <strong>1. df 변환</strong> <br>
+df.values: 전체 컬럼을 matrix로 변환<br>
+→ y축이 시간임. 아래로 길어서 보기 힘들듯.<br>
+<code>df.values.T</code>로 가로로기이이이이이이일게 만들기</p>
+</div>
+<div class="callout">
+<p>➡️ <strong>2. 정규화: min-max normalization</strong></p>
+</div>
+<pre><code class="language-python">(vmax, vmin) = (2500, -1000)
+norm_img = (image_like_data - vmin)/(vmax-vmin)
+# -&gt; 이렇게만 진행하면 최대/최소값을 넘어가는 애들도 있어서 
+# np.clip으로 1로 만들어주기
+clipped_img = np.clip(0,1, norm_img)
+
+</code></pre>
+<div class="callout">
+<p>➡️ <strong>3. 이미지로 변환해서 출력해보기</strong></p>
+</div>
+<ul>
+<li>
+<p>코드</p>
+<p><code>python
+plt.figure(figsize=(32, 4))
+plt.imshow(clipped_img, cmap='gray', vmax=1, vmin=0.0)
+plt.axvline(x=1615) # 파동이 달라지는 부분 표시(파란색 선) 
+plt.tight_layout()</code></p>
+</li>
+</ul>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_1.png"></p>
+<div class="callout">
+<p>💡 영상 분류를 위한 레이블링 이미지셋 → CNN 모델 학습 → 평가</p>
+</div>
+<h2>2. CNN 모델 설계</h2>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+import tensorflow as tf<br>
+from tensorflow import keras<br>
+from tensorflow.keras import layers</p>
+<p>image_size = (201, 200)<br>
+batch_size = 8<br>
+seed = 9721</p>
+<p>```</p>
+</li>
+</ul>
+<p>abnormal GPR 100장, normal GPR 100장이라서, 아무리 토이 프로젝트라 해도 이미지가 적기 때문에 augmentation으로 양을 늘려주려고 함.</p>
+<ul>
+<li><code>Augmentation</code></li>
+</ul>
+<pre><code class="language-python">data_augmentation = keras.Sequential(
+    [
+        layers.RandomFlip(mode='horizontal'),
+    ]
+)
+</code></pre>
+<ul>
+<li>Xception network 이용 → https://maelfabien.github.io/deeplearning/xception/#what-does-it-look-like<br>
+(수업시간에 언급하셨던 모델 중 하나라 궁금해서 사용해봄)</li>
+</ul>
+<pre><code class="language-python">def make_model(input_shape, num_classes):
+    inputs = keras.Input(shape=input_shape)
+
+    # 이미지 augmentation 설정
+    x = data_augmentation(inputs)
+
+    # 초기 레이어 설정
+    x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Conv2D(32, 3, strides=2, padding=&quot;same&quot;)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(&quot;relu&quot;)(x)
+
+    x = layers.Conv2D(64, 3, padding=&quot;same&quot;)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(&quot;relu&quot;)(x)
+
+    previous_block_activation = x  # residual 설정 
+
+    for size in [8, 16, 32, 48]:
+        x = layers.Activation(&quot;relu&quot;)(x)
+        x = layers.SeparableConv2D(size, 3, padding=&quot;same&quot;)(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.Activation(&quot;relu&quot;)(x)
+        x = layers.SeparableConv2D(size, 3, padding=&quot;same&quot;)(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding=&quot;same&quot;)(x)
+
+        # Project residual
+        residual = layers.Conv2D(size, 1, strides=2, padding=&quot;same&quot;)(
+            previous_block_activation
+        )
+        x = layers.add([x, residual]) # back residual 설정 
+        previous_block_activation = x # next residual 설정 
+
+    x = layers.SeparableConv2D(128, 3, padding=&quot;same&quot;)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(&quot;relu&quot;)(x)
+
+    x = layers.GlobalAveragePooling2D()(x)
+
+    if num_classes == 2:
+        activation = &quot;sigmoid&quot;
+        units = 1
+    else:
+        activation = &quot;softmax&quot;
+        units = num_classes
+
+    x = layers.Dropout(0.5)(x)
+    outputs = layers.Dense(units, activation=activation)(x)
+
+    return keras.Model(inputs, outputs)
+
+model = make_model(input_shape=image_size + (3,), num_classes=2)
+</code></pre>
+<pre><code class="language-python">keras.utils.plot_model(model, show_shapes=True)
+</code></pre>
+<ul>
+<li>
+<p>plot_model 확인</p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_2.png"></p>
+</li>
+</ul>
+<h2>3. 모델 학습</h2>
+<pre><code class="language-python">!ls data/labeled
+</code></pre>
+<p>abnormal  normal</p>
+<p>→ abnoraml, normal 있는 것 확인 </p>
+<ul>
+<li>클래스별로 폴더를 나누어놨음. → keras에서 학습에 필요한 데이터셋 만드는 기능 활용</li>
+</ul>
+<div class="callout">
+<p>💡 <code>tf.keras.preprocessing.image_dataset_from_directory</code>()<br>
+: 클래스별 폴더가 있을 경우 데이터셋 만드는 메서드</p>
+</div>
+<pre><code class="language-python">train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    &quot;./data/labeled&quot;,
+    validation_split=0.1,
+    subset=&quot;training&quot;,
+    seed=seed,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    &quot;./data/labeled&quot;,
+    validation_split=0.1,
+    subset=&quot;validation&quot;,
+    seed=seed,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+</code></pre>
+<p>Found 200 files belonging to 2 classes.<br>
+Using 180 files for training.<br>
+Found 200 files belonging to 2 classes.<br>
+Using 20 files for validation.</p>
+<ul>
+<li>
+<p>잘 나뉘었는지 확인: 학습셋 이미지 출력</p>
+<p><code>python
+plt.figure(figsize=(10, 6))
+for images, labels in train_ds.take(1):
+    for i in range(6):
+        ax = plt.subplot(2, 3, i + 1)
+        plt.imshow(images[i].numpy().astype("uint8"))
+        plt.title(int(labels[i]))
+        plt.axis("off")</code></p>
+</li>
+</ul>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_3.png"></p>
+<p>0: 정상이다 1: 뭔가 있다 </p>
+<h3>모델 학습시키기</h3>
+<pre><code class="language-python">epochs = 30
+
+# callback 먼저 정의하기
+callbacks = [
+        # 가장 결과가 좋은 모델을 best.h5로 저장하기
+    keras.callbacks.ModelCheckpoint(&quot;./models/best.h5&quot;, save_best_only=True, monitor='val_loss'),
+    # 학습 과정에서 개선이 없으면 lr 조정하기 
+    keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=10, verbose=0, mode='auto', min_delta=0.0001, cooldown=0, min_lr=0),
+]
+
+# compile
+model.compile(
+        optimizer=keras.optimizers.Adam(1e-3),
+        loss = 'binary_crossentropy',
+        metrics = ['accuracy'],
+)
+
+# 모델 학습
+model.fit(
+            train_ds, epochs = epochs, callbacks = callbacks, validation_data = val_ds,)
+
+</code></pre>
+<h2>4. 모델 추론</h2>
+<p>학습된 모델 파일을 로드해서 샘플 이미지를 추론하기 </p>
+<p>: 학습을 통해 만들어진 모델을 → <strong>실제로 새로운 입력 데이터에 적용하여 결과를 내놓는 단계</strong></p>
+<div class="callout">
+<p>💡 1. 가장 학습 결과 좋은 모델 불러오기<br>
+2. 정상 이미지, 비정상이미지 불러오기<br>
+3. 이미지를 predict를 수행해서 확인</p>
+</div>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+model = tf.keras.models.load_model("./models/best.h5")</p>
+<h1>정상, 비정상 불러오기</h1>
+<p>normal_img = keras.preprocessing.image.load_img(<br>
+    "./data/labeled/normal/1613059433_516002_X_2.3793_Y_-35.1849_T_odom_20.8377_dir_-1.0_0.png", target_size=image_size<br>
+)<br>
+abnormal_img = keras.preprocessing.image.load_img(<br>
+"./data/labeled/abnormal/1613059614_8893247_X_12.9562_Y_-44.8245_T_odom_35.5064_dir_-1.0_0.png", target_size=image_size<br>
+)</p>
+<h1>해당 이미지들 predict 수행</h1>
+<p>def predict_and_show(img):<br>
+    img_array = keras.preprocessing.image.img_to_array(img)<br>
+    img_array = tf.expand_dims(img_array, 0)  # Create batch axis</p>
+<pre><code>predictions = model.predict(img_array)
+score = predictions[0]
+# print(score)
+print( "This image is %.2f percent abnormal and %.2f normal." % (100 * (1 - score), 100 * score))
+
+plt.figure()
+plt.imshow(img, cmap='gray')
+</code></pre>
+<p>predict_and_show(normal_img)<br>
+predict_and_show(abnormal_img)  <br>
+```</p>
+</li>
+</ul>
+<p>1/1 [==============================] - 0s 271ms/step<br>
+This image is 0.57 percent abnormal and 99.43 normal.<br>
+1/1 [==============================] - 0s 23ms/step<br>
+This image is 99.97 percent abnormal and 0.03 normal.</p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_4.png"></p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_5.png"></p>
+<div class="callout">
+<p>💡 normal 결과: abnormal 0.57, normal 99.43<br>
+abnormal 결과: abnoraml 99.97, noraml 0.03<br>
+→ 잘 분류 됨.</p>
+</div>
+<h3>4. ResNet 모델</h3>
+<pre><code class="language-python">from tensorflow import Tensor
+from tensorflow.keras.layers import Input, Conv2D, ReLU, BatchNormalization, AveragePooling2D, Flatten, Dense
+from tensorflow.keras.models import Model
+
+def relu_bn(inputs: Tensor) -&gt; Tensor:
+    relu = ReLU()(inputs)
+    bn = BatchNormalization()(relu)
+    return bn
+
+def residual_block(x: Tensor, downsample: bool, filters: int, kernel_size: int = 3) -&gt; Tensor:
+    y = Conv2D(kernel_size=kernel_size,
+               strides= (1 if not downsample else 2),
+               filters=filters,
+               padding=&quot;same&quot;)(x)
+    y = relu_bn(y)
+    y = Conv2D(kernel_size=kernel_size,
+               strides=1,
+               filters=filters,
+               padding=&quot;same&quot;)(y)
+
+    if downsample:
+        x = Conv2D(kernel_size=1,
+                   strides=2,
+                   filters=filters,
+                   padding=&quot;same&quot;)(x)
+    out = layers.add([x, y])
+    out = relu_bn(out)
+    return out
+
+def make_resnet(input_shape, num_classes):
+    num_filters = 4
+    inputs = keras.Input(shape=input_shape)
+    # Image augmentation block
+    x = data_augmentation(inputs)
+
+    # Entry block
+    x = layers.Rescaling(1.0 / 255)(x)
+
+    x = BatchNormalization()(x)
+    x = Conv2D(kernel_size=3,
+               strides=1,
+               filters=num_filters,
+               padding=&quot;same&quot;)(x)
+    x = relu_bn(x)
+
+    num_blocks_list = [2, 5, 5, 2]
+    for i in range(len(num_blocks_list)):
+        num_blocks = num_blocks_list[i]
+        for j in range(num_blocks):
+            x = residual_block(x, downsample=(j==0 and i!=0), filters=num_filters)
+        num_filters *= 2
+
+    x = layers.GlobalAveragePooling2D()(x)
+    if num_classes == 2:
+        activation = &quot;sigmoid&quot;
+        units = 1
+    else:
+        activation = &quot;softmax&quot;
+        units = num_classes
+
+    x = layers.Dropout(0.5)(x)
+    outputs = layers.Dense(units, activation=activation)(x)
+    return keras.Model(inputs, outputs)
+
+resnet_model = make_resnet(input_shape=image_size + (3,), num_classes=2)
+</code></pre>
+<pre><code class="language-python">epochs = 20
+callbacks = [
+    keras.callbacks.ModelCheckpoint(&quot;./models/resnet_best.h5&quot;, save_best_only=True, monitor='val_loss'),
+    keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5, verbose=0, mode='auto', min_delta=0.00001, cooldown=0, min_lr=0),
+]
+
+resnet_model.compile(
+    optimizer=keras.optimizers.Adam(1e-3),
+    loss=&quot;binary_crossentropy&quot;,
+    metrics=[&quot;accuracy&quot;],
+)
+
+resnet_model.fit(
+    train_ds,
+    epochs=epochs,
+    callbacks=callbacks,
+    validation_data=val_ds,
+)
+</code></pre>
+<ul>
+<li>샘플 이미지 추론하기</li>
+</ul>
+<p>같은 방법으로 결과 제일 좋은거 모델 불러오고, 정상+비정상 이미지 불러오고, 이미지들을 가장 좋은 모델에 넣어 predict를 수행해서 score확인</p>
+<pre><code class="language-python">resnet_model = tf.keras.models.load_model(&quot;./models/resnet_best.h5&quot;)
+normal_img = keras.preprocessing.image.load_img(
+    &quot;./data/labeled/normal/1613059433_516002_X_2.3793_Y_-35.1849_T_odom_20.8377_dir_-1.0_0.png&quot;, target_size=image_size
+)
+abnormal_img = keras.preprocessing.image.load_img(
+&quot;./data/labeled/abnormal/1613059614_8893247_X_12.9562_Y_-44.8245_T_odom_35.5064_dir_-1.0_0.png&quot;, target_size=image_size
+)
+
+def predict_and_show(img):
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+    predictions = resnet_model.predict(img_array)
+    score = predictions[0]
+    print( &quot;This image is %.2f percent abnormal and %.2f normal.&quot; % (100 * (1 - score), 100 * score))
+    plt.figure()
+    plt.imshow(img, cmap='gray')
+
+predict_and_show(normal_img)
+predict_and_show(abnormal_img)
+</code></pre>
+<p>1/1 [==============================] - 0s 450ms/step<br>
+This image is 4.07 percent abnormal and 95.93 normal.<br>
+1/1 [==============================] - 0s 30ms/step<br>
+This image is 93.03 percent abnormal and 6.97 normal.</p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_6.png"></p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_7.png"></p>
+<p><img alt="Untitled" src="../assets/gpr/Untitled_8.png"></p>
+<p>선의 굵기를 보면 미세하게 달라짐. abnormal로 비교해보면 ResNet이 더 뚜렷하게 구분하는 것을 확인함.</p>
+<h2>💡깨달은 점</h2>
+<ul>
+<li>직접 딥러닝 모델을 가져와서 구현하는 시간이 오래 걸렸음. 아직 딥러닝 모델에 대해 익숙하지 않다는 뜻이기 때문에, 여러개를 더 접해서 익숙해질 필요가 있음.</li>
+<li>CNN을 구현하는 것은 배웠던 거라서 어렵지 않았지만, 무작정 레이어를 쌓는다고 해서 좋은 것은 아니고, 레이어를 쌓는거에 따라 딥러닝 모델이 달라지니까 단순히 레이어만 쌓는 것보다는 CNN기반 딥러닝 모델에 대해 파악해보는 것이 좋을 듯.</li>
+<li>도메인에 대한 이해도도 절대 무시할 수 없는 것을 체감함. 물론 이 데이터는 파동이라서 쉽게 이미지로 인식을 해서 가능했지만, 다른 데이터라면 이해하고 친숙해지는데 시간이 좀 더 오래 걸렸을 것 같음.</li>
+<li>하나의 딥러닝 모델을 구현해봤으니, 방법을 알았음. 이제 다른 딥러닝 모델에 대해 논문을 읽어보고 구조를 파악한 뒤 직접 구현해보는 게 좋은 공부 방법일 듯.</li>
+</ul>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

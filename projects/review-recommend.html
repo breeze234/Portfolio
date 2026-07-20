@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리뷰 분석을 통한 상품 추천 여부 예측 — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Project · NLP</div>
+  <h1>리뷰 분석을 통한 상품 추천 여부 예측</h1>
+  <div class="metachips"><span class="chip">ToyProject</span><span class="chip">NLP · TF-IDF</span><span class="chip">데이터 전처리 · 모델링</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<h3>🪢<strong>데이터 출처</strong></h3>
+<p>https://www.kaggle.com/datasets/nicapotato/womens-ecommerce-clothing-reviews</p>
+<h3>📌프로젝트 개요</h3>
+<ul>
+<li>지그재그, 에이블리, 브랜디 등을 자주 이용하는 팀원과 함께 익숙한 도메인으로 자연어 처리를 시도해보고자 시작</li>
+</ul>
+<div class="callout">
+<p>➡️ <strong>작성한 리뷰가 해당 제품을 추천하는 리뷰인지, 비추천하는 리뷰인지 예측해보는 분류모델로 구현해보기</strong></p>
+</div>
+<ul>
+<li>목표: 상품 리뷰 데이터 분석을 통해 상품 추천 여부(0, 1)을 예측하는 분류 모델 수행</li>
+<li>순서<br>
+1. 데이터 확인 → 2. 데이터 결측치 처리 → 3. 데이터 시각화: 워드 클라우드 → 4. 데이터 전처리: 자연어 전처리(TF-IDF), 학습셋vs테스트셋 분리 → 5. 머신러닝 모델 학습 → 6. 평가 및 예측</li>
+</ul>
+<h3>1. 데이터 확인</h3>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+import numpy as np <br>
+import pandas as pd <br>
+import matplotlib.pyplot as plt<br>
+import seaborn as sns</p>
+<h1>동일한 결과를 위해 시드값 고정</h1>
+<p>np.random.seed(42) </p>
+<p>df_origin = pd.read_csv("/Womens Clothing E-Commerce Reviews.csv")<br>
+df_origin.head()<br>
+```</p>
+<table>
+<thead>
+<tr>
+<th><strong>Unnamed: 0.1</strong></th>
+<th><strong>Unnamed: 0</strong></th>
+<th><strong>Clothing ID</strong></th>
+<th><strong>Age</strong></th>
+<th><strong>Title</strong></th>
+<th><strong>Review Text</strong></th>
+<th><strong>Rating</strong></th>
+<th><strong>Recommended IND</strong></th>
+<th><strong>Positive Feedback Count</strong></th>
+<th><strong>Division Name</strong></th>
+<th><strong>Department Name</strong></th>
+<th><strong>Class Name</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>767</td>
+<td>33</td>
+<td>NaN</td>
+<td>Absolutely wonderful - silky and sexy and comf...</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>Initmates</td>
+<td>Intimate</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1080</td>
+<td>34</td>
+<td>NaN</td>
+<td>Love this dress! it's sooo pretty. i happene...</td>
+<td>5</td>
+<td>0</td>
+<td>4</td>
+<td>General</td>
+<td>Dresses</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>1077</td>
+<td>60</td>
+<td>Some major design flaws</td>
+<td>I had such high hopes for this dress and reall...</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>General</td>
+<td>Dresses</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>1049</td>
+<td>50</td>
+<td>My favorite buy!</td>
+<td>I love, love, love this jumpsuit. it's fun, fl...</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>General Petite</td>
+<td>Bottoms</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>847</td>
+<td>47</td>
+<td>Flattering shirt</td>
+<td>This shirt is very flattering to all due to th...</td>
+<td>5</td>
+<td>0</td>
+<td>6</td>
+<td>General</td>
+<td>Tops</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>info() 확인</p>
+</li>
+</ul>
+<p>→ Unnamed, unnamed는 필요없는 칼럼. (인덱스임)</p>
+<p><strong>→ Title이랑 Review Text로 Recommend IND (0,1)을 예측해보는 모델 설계!</strong> </p>
+<pre><code class="language-python">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 23486 entries, 0 to 23485
+Data columns (total 12 columns):
+ #   Column                   Non-Null Count  Dtype 
+---  ------                   --------------  ----- 
+ 0   Unnamed: 0.1             23486 non-null  int64 
+ 1   Unnamed: 0               23486 non-null  int64 
+ 2   Clothing ID              23486 non-null  int64 
+ 3   Age                      23486 non-null  int64 
+ **4   Title                    19676 non-null  object
+ 5   Review Text              22641 non-null  object**
+ 6   Rating                   23486 non-null  int64 
+ **7   Recommended IND          23486 non-null  int64** 
+ 8   Positive Feedback Count  23486 non-null  int64 
+ 9   Division Name            23472 non-null  object
+ 10  Department Name          23472 non-null  object
+ 11  Class Name               23472 non-null  object
+dtypes: int64(7), object(5)
+memory usage: 2.2+ MB
+</code></pre>
+<ul>
+<li>describe 확인</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>Unnamed: 0.1</strong></th>
+<th><strong>Unnamed: 0</strong></th>
+<th><strong>Clothing ID</strong></th>
+<th><strong>Age</strong></th>
+<th><strong>Rating</strong></th>
+<th><strong>Recommended IND</strong></th>
+<th><strong>Positive Feedback Count</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count</td>
+<td>23486.000000</td>
+<td>23486.000000</td>
+<td>23486.000000</td>
+<td>23486.000000</td>
+<td>23486.000000</td>
+<td>23486.000000</td>
+</tr>
+<tr>
+<td>mean</td>
+<td>11742.500000</td>
+<td>11742.500000</td>
+<td>918.118709</td>
+<td>43.198544</td>
+<td>4.196032</td>
+<td>0.177638</td>
+</tr>
+<tr>
+<td>std</td>
+<td>6779.968547</td>
+<td>6779.968547</td>
+<td>203.298980</td>
+<td>12.279544</td>
+<td>1.110031</td>
+<td>0.382216</td>
+</tr>
+<tr>
+<td>min</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+<td>18.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+</tr>
+<tr>
+<td>25%</td>
+<td>5871.250000</td>
+<td>5871.250000</td>
+<td>861.000000</td>
+<td>34.000000</td>
+<td>4.000000</td>
+<td>0.000000</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>11742.500000</td>
+<td>11742.500000</td>
+<td>936.000000</td>
+<td>41.000000</td>
+<td>5.000000</td>
+<td>0.000000</td>
+</tr>
+<tr>
+<td>75%</td>
+<td>17613.750000</td>
+<td>17613.750000</td>
+<td>1078.000000</td>
+<td>52.000000</td>
+<td>5.000000</td>
+<td>0.000000</td>
+</tr>
+<tr>
+<td>max</td>
+<td>23485.000000</td>
+<td>23485.000000</td>
+<td>1205.000000</td>
+<td>99.000000</td>
+<td>5.000000</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+<h3>2. 데이터 결측치 처리: Outlier</h3>
+<ul>
+<li>의미없는 변수 삭제: <code>df_origin.drop(columns = ['Unnamed: 0', 'Unnamed: 0.1'])</code></li>
+</ul>
+<p>→ 새롭게 만든 <code>df_clean</code> 데이터 프레임으로 시작</p>
+<ul>
+<li>결측치 갯수 확인: <code>df_clean.isnull().sum()</code></li>
+</ul>
+<pre><code class="language-python">Clothing ID                   0
+Age                           0
+Title                      3810
+**Review Text                 845**
+Rating                        0
+Recommended IND               0
+Positive Feedback Count       0
+Division Name                14
+Department Name              14
+Class Name                   14
+dtype: int64
+</code></pre>
+<p>Title, Review text에 결측치 좀 있고, 아래 3개 14개 있음. </p>
+<ul>
+<li>자연어 전처리를 해보는 게 목표인 프로젝트 이기에 결측치는 삭제 함. <code>df_clean[~df_clean['**Review Text**'].isnull()]</code></li>
+<li>결측치 삭제 후 재확인</li>
+</ul>
+<pre><code class="language-python">Clothing ID                   0
+Age                           0
+Title                      2966
+**Review Text                   0**
+Rating                        0
+Recommended IND               0
+Positive Feedback Count       0
+Division Name                13
+Department Name              13
+Class Name                   13
+dtype: int64
+</code></pre>
+<p>Review Text 삭제 했음.</p>
+<h3>3. 데이터 시각화: 워드 클라우드</h3>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+import nltk<br>
+from nltk.corpus import stopwords<br>
+from nltk import sent_tokenize, word_tokenize<br>
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator<br>
+from collections import Counter<br>
+from nltk.tokenize import RegexpTokenizer<br>
+import re</p>
+<h1>Review Text 전에 Title로 시도해보기</h1>
+<p>df_clean_title = df_clean[~df_clean['Title'].isnull()]</p>
+<h1>띄어쓰기 단위로 글자 가져오기</h1>
+<p>tokens = re.findall("[\w']+", df_clean_title['Title'].str.lower().str.cat(sep=' ')) </p>
+<p>df_clean_title['Title'].str.lower().str.cat(sep=' ')</p>
+<h1>불용어 처리 하는 패키지 다운받기</h1>
+<p>nltk.download('stopwords')</p>
+<h1>영어 데이터라서 영어 불용어 처리하는 stopwords 가져오기</h1>
+<p>en_stops = set(stopwords.words('english'))</p>
+<h1>tokens에서 불용어에 해당하지 않는 단어를 저장해</h1>
+<h1>filtered_sentence에 저장</h1>
+<p>filtered_sentence = [token for token in tokens if not token in en_stops]</p>
+<h1>출력사이즈 설정</h1>
+<p>plt.rcParams['figure.figsize'] = (16, 16)</p>
+<h1>워드 클라우드 저장 및 출력</h1>
+<p>wordcloud = WordCloud(max_font_size=50, max_words=100,background_color="white").generate(' '.join(filtered_sentence))<br>
+plt.imshow(wordcloud,interpolation="bilinear")<br>
+plt.axis("off")<br>
+plt.show()</p>
+<p>```</p>
+</li>
+<li>
+<p>Title 데이터 워드 클라우드</p>
+</li>
+</ul>
+<div class="callout">
+<p>📌 <code>re.findall()</code>: 띄어쓰기 단위로 단어를 가져오는 메서드!<br>
+Ex. <code>df_clean_title['Title'].str.lower().str.cat(sep=' ')</code><br>
+=&gt;'some major design flaws my favorite buy! flattering ….’ <br>
+⇒ 띄어쓰기 단위로 만들었음<br>
+⇒ 이걸 findall()에 대입해서 사용</p>
+</div>
+<ul>
+<li>tokens 확인</li>
+</ul>
+<p>→ 잘 출력되는 거 확인 </p>
+<pre><code class="language-python">['some',
+ 'major',
+ 'design',
+ 'flaws',
+ 'my',
+ 'favorite',
+ 'buy',
+ 'flattering',
+ 'shirt',
+ 'not',
+ 'for',
+ 'the',
+ 'very',
+ 'petite',
+ 'cagrcoal',
+ 'shimmer',
+ 'fun',
+ ....
+ ]
+</code></pre>
+<ul>
+<li>불용어 처리</li>
+</ul>
+<div class="callout">
+<p>📌 tokesn에서 stopwords(불용어 처리 메서드)에 해당되지 않는 단어를 따로 저장하면 → 불용어가 아닌 쓸모 있는 단어들만 채택됨.</p>
+</div>
+<pre><code class="language-python">filtered_sentence = [token for token in tokens if not token in en_stops]
+</code></pre>
+<p><code>en_stops</code> → 여기에 불용어가 저장됨. a, an, the, all, am 등 </p>
+<ul>
+<li>Title 워드 클라우드 확인 !</li>
+</ul>
+<p><img alt="Untitled" src="../assets/review-recommend/Untitled.png"></p>
+<p>→ Love, Beautiful, pretty, perfect, dress, cute가 크게 보임 ⇒ 많이 쓰인다는 뜻.</p>
+<h3><code>Review Text</code>에 적용하기</h3>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+tokens = re.findall("[\w']+", df_clean['Review Text'].str.lower().str.cat(sep=' ')) </p>
+<p>filtered_sentence = [token for token in tokens if not token in en_stops]</p>
+<p>plt.rcParams['figure.figsize'] = (16, 16)</p>
+<p>wordcloud = WordCloud(max_font_size=50, max_words=100, background_color="white").generate(' '.join(filtered_sentence))<br>
+plt.imshow(wordcloud,interpolation="bilinear")<br>
+plt.axis("off")<br>
+plt.show()<br>
+```</p>
+</li>
+</ul>
+<p><img alt="Untitled" src="../assets/review-recommend/Untitled_1.png"></p>
+<p>→ 뭔가 Title이랑 비슷해보임?</p>
+<p>→ Top, dres, look, skirt, fabric, 등이 보임.</p>
+<h3>추천하는지, 안하는지 → Recommended IND 0, 1 분포 확인</h3>
+<ul>
+<li>
+<p>코드</p>
+<p>```python</p>
+<h1>막대그래프로 출력</h1>
+<p>df_clean['Recommended IND'].value_counts().plot(kind='bar')<br>
+df_clean['Recommended IND'].value_counts()<br>
+```</p>
+</li>
+</ul>
+<p>Recommended IND<br>
+0    18540<br>
+1     4101<br>
+Name: count, dtype: int64</p>
+<p><img alt="Untitled" src="../assets/review-recommend/Untitled_2.png"></p>
+<p>→ 데이터 불균형이 있는 상태임. 이 상태로 하면 머신러닝 모델의 성능이 떨어지겠지만 그래도 자연어 전처리를 시도해보는 게 이 프로젝트의 의의니까 그냥 패스하기로 함.</p>
+<h3>4. 데이터 전처리 - (1) 자연어 전처리: TF-IDF</h3>
+<div class="callout">
+<p>📌 자연어 데이터 → 머신러닝 입력값으로 바꿔줘야 함.<br>
+자연어 빈도 기반으로 → 수치로 변환한다는 뜻!</p>
+</div>
+<pre><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
+
+# 객체 불러오기, 불용어처리는 영어로 
+vectorizer = TfidfVectorizer(stop_words = 'english')
+# Review Text 전부 소문자로 -&gt; 그 다음 TF-IDF 적용하기 
+X = vectorizer.fit_transform(df_clean['Review Text'].str.lower())
+</code></pre>
+<ul>
+<li><code>X.shape</code></li>
+</ul>
+<p>(22641, 13855)</p>
+<ul>
+<li><code>y</code>값 설정</li>
+</ul>
+<pre><code class="language-python">y = df_clean['Recommended IND']
+y = y.to_numpy().ravel() 
+# 1 차원 벡터 형태로 출력하기 위해 ravel 사용
+y
+</code></pre>
+<p>→ array([0, 0, 1, ..., 1, 0, 0])</p>
+<h3>4. 데이터 전처리 - (2) 학습셋 vs 테스트셋</h3>
+<ul>
+<li>
+<p>train_test_split</p>
+<p>```python<br>
+from sklearn.model_selection import train_test_split<br>
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)</p>
+<p>```</p>
+</li>
+</ul>
+<h3>5. 머신러닝 모델 학습</h3>
+<ol>
+<li><code>DecisionTreeClassifier</code></li>
+</ol>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+from sklearn.tree import DecisionTreeClassifier<br>
+model = DecisionTreeClassifier()<br>
+model.fit(x_train, y_train)</p>
+<p>print(model.score(x_train, y_train))<br>
+print(model.score(x_test, y_test))<br>
+```</p>
+</li>
+</ul>
+<p><strong>Accuracy</strong></p>
+<p>1.0<br>
+0.8039302274232722</p>
+<p>→ 과적합이 일어남. 데이터 불균형때문에 어쩔 수 없다고 판단함.</p>
+<ol>
+<li>나머지 모델 한번에 학습하기</li>
+</ol>
+<p><code>KNN</code>, <code>MultinomialNB</code>, <code>BernoulliNB</code>, <code>RandomForestClassifier</code>, <code>SVC</code>, <code>XGB</code> 시도</p>
+<ul>
+<li>
+<p>코드</p>
+<p>```python<br>
+from sklearn.neighbors import KNeighborsClassifier<br>
+from sklearn.naive_bayes import MultinomialNB<br>
+from sklearn.naive_bayes import BernoulliNB<br>
+from sklearn.ensemble import RandomForestClassifier<br>
+from sklearn.svm import SVC<br>
+import xgboost as xgb<br>
+from xgboost.sklearn import XGBClassifier</p>
+<p>models = []<br>
+models.append(('KNN', KNeighborsClassifier()))  # KNN 모델<br>
+models.append(('NB-M', MultinomialNB()))  # 멀티노미얼 나이브 베이즈<br>
+models.append(('NB-B', BernoulliNB()))  # 베르누이 나이브 베이즈 모델<br>
+models.append(('RF', RandomForestClassifier()))  # 랜덤포레스트 모델<br>
+models.append(('SVM', SVC(gamma='auto')))  # SVM 모델<br>
+models.append(('XGB', XGBClassifier()))  # XGB 모델</p>
+<p>for name, model in models:<br>
+    model.fit(x_train, y_train)<br>
+    msg = "%s - train_score : %f, test score : %f" % (name, model.score(x_train, y_train), model.score(x_test, y_test))<br>
+    print(msg)<br>
+```</p>
+</li>
+</ul>
+<p>KNN - train_score : 0.885987, test score : 0.831972<br>
+NB-M - train_score : 0.836020, test score : 0.814749<br>
+NB-B - train_score : 0.907078, test score : 0.866416<br>
+RF - train_score : 1.000000, test score : 0.847207<br>
+SVM - train_score : 0.821996, test score : 0.806359<br>
+XGB - train_score : 0.946720, test score : 0.868404</p>
+<p><strong>→ 학습셋으로 보면 랜덤포레스트가 가장 나은데, 시험셋이랑 같이 보면 XGB가 가장 뛰어남. XGB 모델로 변수 중요도 확인해보기</strong></p>
+<ul>
+<li><code>max_features</code> 확인하기</li>
+<li>
+<p>코드</p>
+<p>```python<br>
+max_num_features = 20<br>
+ax = xgb.plot_importance(models[-1][1], height = 1, grid = True, importance_type = 'gain', show_values = False, max_num_features = max_num_features)<br>
+ytick = ax.get_yticklabels()<br>
+word_importance = []<br>
+for i in range(max_num_features):<br>
+    word_importance.append(vectorizer.get_feature_names_out()[int(ytick[i].get_text().split('f')[1])])</p>
+<p>ax.set_yticklabels(word_importance)</p>
+<p>plt.rcParams['figure.figsize'] = (10, 15)<br>
+plt.xlabel('The F-Score for each features')<br>
+plt.ylabel('Importances')<br>
+plt.show()<br>
+```</p>
+</li>
+</ul>
+<p><img alt="Untitled" src="../assets/review-recommend/Untitled_3.png"></p>
+<p>→ 특성 중요도를 기반으로  그에 대한 단어로 출력하도록 함. </p>
+<p>unflattering, cheap, perfect, returning, huge라는 단어들이 상위 5위로 출력됨. </p>
+<h3>6. 평가 및 예측: Confusion Matrix</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Recomended IND</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>추천한다</td>
+<td>0</td>
+</tr>
+<tr>
+<td>추천하지 않는다</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>→ 여기서 0에 치우쳐진 데이터였음.</p>
+<p>추천하지 않는다 1에 대한 평가도 확인을 해봐야 할 듯. </p>
+<ul>
+<li>Confusion matrix: 실제값, 예측값을 넣어서 표로 출력</li>
+</ul>
+<pre><code class="language-python">from sklearn.metrics import confusion_matrix
+
+# XGB 모델로 Confusion matrix 확인하기 
+model_predition_xgb = models[-1][1].predict(x_test)
+cm_xgb = confusion_matrix(y_test, model_predition_xgb)
+
+# 히트맵으로 2x2 출력하기 
+plt.rcParams['figure.figsize'] = (5, 5)
+sns.set(style = 'dark', font_scale = 1.4)
+ax = sns.heatmap(cm_xgb, annot=True)
+plt.xlabel('Real Data')
+plt.ylabel('Prediction')
+plt.show()
+cm_xgb
+</code></pre>
+<p><img alt="Untitled" src="../assets/review-recommend/Untitled_4.png"></p>
+<p>array([[3510,  142],<br>
+[ 454,  423]])</p>
+<p>| <strong>‘추천’ 예측시</strong><br>
+→ 실제 추천인 갯수 | <strong>‘비추천’ 예측시</strong><br>
+→ 실제 추천인 갯수 |<br>
+| --- | --- |<br>
+| <strong>‘추천’ 예측시</strong><br>
+→ 실제 비추천 갯수 | <strong>‘비추천’ 예측시</strong><br>
+→ 실제 비추천 갯수 |<br>
+- recall, precision 성능 점수 확인하기</p>
+<pre><code class="language-python">from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+
+print(&quot;Recall score: {}&quot;.format(recall_score(y_test, model_predition_xgb )))
+print(&quot;Precision score: {}&quot;.format(precision_score(y_test, model_predition_xgb )))
+</code></pre>
+<p>Recall score: <strong>0.22</strong>006841505131128<br>
+Precision score: <strong>0.89</strong>35185185185185</p>
+<p>→ 비추천에 대한 데이터가 적어서 Recall 성능 점수 현저히 낮음</p>
+<p>→ 추천에 대해 치우쳐진 데이터라서 Precision 성능 높음. </p>
+<h2>💡깨달은 점</h2>
+<ul>
+<li>데이터 불균형인 상태인 경우, Recall, Preicison을 통해 확인을 해봐야 함. 이럴 경우 다른 데이터 공모전에서 평가지표로 F1-score을 내세울 시 낮은 점수를 기록 할 수도 있으니 데이터 불균형 상태일 경우 어떻게 해야할지 생각해볼 필요성을 느낌.</li>
+<li>자연어 전처리에 대해 처음으로 시도해봤는데, 생각보다 재미있었음. 익숙하게 접하는 ‘리뷰’들도 하나의 데이터이기에 이거로부터 예측하는 모델을 설계하는 과정이 흥미로웠음.</li>
+<li>자연어 전처리를 공부하는 과정에서, ‘불용어’라던지 새로 접하는 라이브러리들에 대해 알아가는게 시간이 오래 걸렸음. 익숙해질 필요가 있음.</li>
+</ul>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>라이트-나이트(Light-Night) — Soojung Choi</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="nav"><div class="container">
+  <a class="brand" href="../index.html">Soojung&nbsp;<span>Choi</span></a>
+  <nav>
+    <a href="../index.html#research">Research</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<section class="detail-hero"><div class="container">
+  <a class="backlink" href="../index.html">&larr; Back to portfolio</a>
+  <div class="venue">Ideation</div>
+  <h1>라이트-나이트(Light-Night)</h1>
+  <div class="metachips"><span class="chip">모두에게 안전한 야간 귀가길을 위한 고조도 길 찾기 제안</span></div>
+</div></section>
+
+<article class="article"><div class="container">
+<p>진행 기간: 2022년 9월 10일 → 2022년 9월 30일</p>
+<h2>🔦 라이트 나이트: 모두에게 안전한 야간 귀가길을 위한 고조도 길 찾기</h2>
+<p><img alt="Untitled" src="../assets/light-night/Untitled.png"></p>
+<h2>문제 배경</h2>
+<h3>1. 모바일 지도 어플리케이션 ‘길찾기’ 기능에서 고려되지 않는 범죄로부터의 안정성</h3>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_1.png"></p>
+<p>→ 이용자에게 편리성을 제공해주지만, 범죄로부터의 안정성을 고려할 수 있는 기능은 아님. 위성지도, 교통 상황 등 다양한 디지털 정보에 기반한 빠른 길 안내가 목적인 기능들임. </p>
+<h3>2. 성별 및 연령별 상이한 야간 보행시 체감 안전도</h3>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_2.png"></p>
+<h2>필요성</h2>
+<h3>가로등과 범죄율의 유의미한 상관관계</h3>
+<ol>
+<li>셉테드(CPTED, Crime Prevention Throught Environmental Design)</li>
+</ol>
+<p>도시생활공간의 설계 단계부터 범죄를 예방할 수 있도록 다양한 안전시설 및 수단을 적용한 도시계획 및 건축 설계</p>
+<p>효과: 범죄 발생 감소, 범죄 두려움이 감소하면서 나타나는 삶의 질 향상</p>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_3.png"></p>
+<ol>
+<li>경관개선사업을 통한 암전구간조명 설치</li>
+</ol>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_4.png"></p>
+<div class="callout">
+<p>🔥 더 밝을수록 치안이 좋아져서, 가로등과 범죄율은 음의 상관관계를 가진다고 볼 수 있음.</p>
+</div>
+<h2>활용 데이터</h2>
+<div class="callout">
+<p>🔦 <strong>“가로등 데이터”</strong></p>
+<p>광진구 스마트보안등(IoT) 측정 정보<br>
+(출처: 서울시 열린데이터 광장)</p>
+</div>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_5.png"></p>
+<h3>데이터 전처리: R</h3>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_6.png"></p>
+<h3>데이터 분석</h3>
+<p>검색 조건: “램프고장값 0, 이상점등값 0, 누전발생값 0, 안정기고장값 0, 깜빡거림값 0”</p>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_7.png"></p>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_8.png"></p>
+<p>→ 디밍값이 크다 = 더 밝은 길이다.</p>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_9.png"></p>
+<div class="callout">
+<p>🔦 따라서, 지도 공간 상에서 <strong>가로등 위치 값을 추가한 후, 실시간 길 찾기 기능을 사용할 시 디밍값이 높은 순서대로 동선을 제공하는 것.</strong></p>
+</div>
+<p><img alt="Untitled" src="../assets/light-night/Untitled_10.png"></p>
+<h3>기대효과</h3>
+<ul>
+<li>개인적 측면<br>
+1. <strong>국민의 체감 안전도 향상</strong>: 야간 보행시 여성, 낮은 연령대의 시민들에게 불안감을 일부 해소가능한 대안을 마련 가능함. <strong>체감 안전도를 향상시킬 수 있음.</strong><br>
+2. 국민의 알 권리 확장: 라이트 나이트를 이용함으로써 공간 정보에 대한 접근성이 증가해, 일상생활에서의 의사결정에 중요한 기초정보와 기준으로 활용을 기대할 수 있음. </li>
+<li>
+<p>행정적 측면<br>
+1. <strong>구역별 범죄 발생 감소:</strong> </p>
+<p>시민들의 밝은 길로의 보행률 증가 → 범죄 발생에 대한 방어적인 분위기가 형성 → 시야 확보가 충분히 이루어져 CCTV를 이용한 범죄자 검거에 빠른 도움</p>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p><strong>야간 조도 개선 사업 발전 및 3세대 셉테드 사업 발전에 기여</strong></p>
+<p>시민들의 밝은 길로의 보행률 증가→ 인적이 드문 곳이 명확해짐 → 암전 구간에 조명을 추가 설치 및 조명의 색 개선</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>기술적 측면<br>
+1. <strong>공간 정보 산업 발전에 기여</strong></p>
+<p>공간 정보 산업은 국가에서 주목하는 산업전망이 높은 분야 중 하나.<br>
+→ 공간정보 서비스인 ‘라이트 나이트’ 는 도시계획 시 범죄예방 디자인 구축에 도움이 될 수 있을 것이라 기대</p>
+</li>
+</ul>
+<ol start="2">
+<li>융복합 기술로의 발전 가능성</li>
+</ol>
+<h2>💡 깨달은 점</h2>
+<ul>
+<li>프로그래밍을 배우기 시작하던 때 간단하게 실행한 아이디어. 프로그래밍 역량을 좀 더 쌓은 후 데이터 분석 및 길 찾기 안내까지 실행해본다면 좋았을 것 같음.</li>
+<li>교내 데사데이 아이디어 공모전, 광진구 빅데이터 공모전에 참여하여 PPT로 만드는 과정이 결과물을 한 번에 볼 수 있게 스스로 정리하는 시간이었음.</li>
+<li>단순한 아이디어임에도 불구하고 정리하는 것은 꽤나 시간이 많이 걸리니, 나중에 진행한다면 미리미리 작성을 해둬야 겠음.</li>
+<li>꼭 스마트 보안등 데이터로 진행할 필요는 없을 것 같음. 불이 달려있는 CCTV가 있을 수도 있고, 설치된 가로등에 대한 데이터가 있다면 그걸 함께 사용해서 분석을 진행한다면 더 좋을 것 같음.</li>
+</ul>
+</div></article>
+
+<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+</body>
+</html>
