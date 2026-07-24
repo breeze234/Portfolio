@@ -1,4 +1,4 @@
-# Portfoli
+# Portfolio
 
 ## Architecture
 ```
@@ -9,10 +9,6 @@ portfolio_site/
 ├─ assets/               # 프로필 사진 + 프로젝트별 이미지
 └─ README.md
 ```
-
-## 로컬 미리보기
-`index.html`을 브라우저로 오픈
-
 ## GitHub Pages 배포 (username.github.io)
 1. GitHub에서 `<username>.github.io` 이름의 public 저장소 생성
 2. 이 폴더의 **내용물**(index.html 등)을 저장소 루트에 push
