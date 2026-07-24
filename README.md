@@ -1,16 +1,14 @@
-# Soojung Choi — Portfolio (Static Site)
+# Portfoli
 
-## 구조
+## Architecture
 ```
 portfolio_site/
-├─ index.html            # 메인 원페이지
-├─ style.css             # 공용 스타일 (미니멀 아카데믹)
+├─ index.html            # Main
+├─ style.css             # 공용 스타일 (Minimal Academic style)
 ├─ projects/             # 프로젝트 상세 페이지 13개
 ├─ assets/               # 프로필 사진 + 프로젝트별 이미지
-├─ build_details.py      # (배포 불필요) 노션 md → 상세 HTML 변환 스크립트
 └─ README.md
 ```
-> `build_details.py`, `README.md`는 사이트 동작에 필요없음
 
 ## 로컬 미리보기
 `index.html`을 브라우저로 오픈
