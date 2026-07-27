@@ -50,7 +50,9 @@ img{max-width:100%; height:auto}
 .hero .container{display:grid; grid-template-columns:150px 1fr; gap:36px; align-items:center}
 .hero .photo{
   width:150px; height:150px; border-radius:50%; object-fit:cover;
-  border:1px solid var(--line); box-shadow:0 6px 24px rgba(20,30,50,.10);
+  border:1px solid var(--line); 
+  object-position:center 35%;
+  box-shadow:0 6px 24px rgba(20,30,50,.10);
 }
 .hero .overline{color:var(--accent); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase}
 .hero h1{font-family:var(--serif); font-size:44px; line-height:1.1; margin:.15em 0 .1em; letter-spacing:-.01em}
