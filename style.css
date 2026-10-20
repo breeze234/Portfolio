@@ -215,3 +215,8 @@ footer{border-top:1px solid var(--line); padding:34px 0; color:var(--muted); fon
 .article .callout{background:var(--accent-soft); border:1px solid #dbe4ef; border-radius:12px; padding:6px 20px; margin:20px 0}
 .article .callout table{background:transparent}
 .article .callout table th{background:#e4ecf5}
+
+/* Research subsections (First-Author / Collaborative) */
+.subhead{display:flex; align-items:baseline; gap:10px; font-size:15px; font-weight:700; color:var(--ink); margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid var(--line)}
+.subhead span{font-size:12px; font-weight:600; color:var(--ink-soft)}
+.cards + .subhead{margin-top:40px}
