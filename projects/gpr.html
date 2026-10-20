@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GPR 데이터를 이용한 매설물 탐지모델 — Soojung Choi</title>
+<title>GPR 데이터를 이용한 매설물 탐지모델 | Soojung Choi</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -24,9 +24,9 @@
 </div></section>
 
 <article class="article"><div class="container">
-<h3>🪢 데이터 출처</h3>
+<h3>데이터 출처</h3>
 <p>https://github.com/rpl-cmu/CMU-GPR-Dataset</p>
-<h3>📌프로젝트 개요</h3>
+<h3>프로젝트 개요</h3>
 <ul>
 <li>학부과정에서 배웠던 CNN모델로 이미지 분류를 시도해보고자 함.</li>
 <li>그레이스케일 이미지가 처음 시도해보기에 적합할 듯 싶어 구글링 → 그래프의 파동이 그레이스케일로 잘 표현될 것 같다고 판단하여 GPR 이미지 시도<br>
@@ -453,7 +453,7 @@ df.head()</code></p>
 <p>→ 뭐가 많음…  이게 뭔지 확인 ! </p>
 <p>8 rows × 201 columns</p>
 <div class="callout">
-<p>📌 200개의 반사된 주파수의 <strong>“시간별 진폭”이 저장된 것.<br>
+<p>200개의 반사된 주파수의 <strong>“시간별 진폭”이 저장된 것.<br>
 0번째 시간의 진폭, 1번째 시간의 진폭… 200번째 시간의 진폭</strong></p>
 </div>
 <ul>
@@ -466,13 +466,13 @@ df.head()</code></p>
 <p>→ 초록색(100), 파란색(0): 미미하지만 파동이 달라지고 있음.</p>
 <p>⇒ 시간에 따른 값을 표기할 수 있으니 이걸 이미지로 변환할 수 있을 것. (초음파 사진처럼)</p>
 <div class="callout">
-<p>➡️ <strong>1. df 변환</strong> <br>
+<p>→ <strong>1. df 변환</strong> <br>
 df.values: 전체 컬럼을 matrix로 변환<br>
 → y축이 시간임. 아래로 길어서 보기 힘들듯.<br>
 <code>df.values.T</code>로 가로로기이이이이이이일게 만들기</p>
 </div>
 <div class="callout">
-<p>➡️ <strong>2. 정규화: min-max normalization</strong></p>
+<p>→ <strong>2. 정규화: min-max normalization</strong></p>
 </div>
 <pre><code class="language-python">(vmax, vmin) = (2500, -1000)
 norm_img = (image_like_data - vmin)/(vmax-vmin)
@@ -482,7 +482,7 @@ clipped_img = np.clip(0,1, norm_img)
 
 </code></pre>
 <div class="callout">
-<p>➡️ <strong>3. 이미지로 변환해서 출력해보기</strong></p>
+<p>→ <strong>3. 이미지로 변환해서 출력해보기</strong></p>
 </div>
 <ul>
 <li>
@@ -496,7 +496,7 @@ plt.tight_layout()</code></p>
 </ul>
 <p><img alt="Untitled" src="../assets/gpr/Untitled_1.png"></p>
 <div class="callout">
-<p>💡 영상 분류를 위한 레이블링 이미지셋 → CNN 모델 학습 → 평가</p>
+<p>영상 분류를 위한 레이블링 이미지셋 → CNN 모델 학습 → 평가</p>
 </div>
 <h2>2. CNN 모델 설계</h2>
 <ul>
@@ -599,7 +599,7 @@ model = make_model(input_shape=image_size + (3,), num_classes=2)
 <li>클래스별로 폴더를 나누어놨음. → keras에서 학습에 필요한 데이터셋 만드는 기능 활용</li>
 </ul>
 <div class="callout">
-<p>💡 <code>tf.keras.preprocessing.image_dataset_from_directory</code>()<br>
+<p><code>tf.keras.preprocessing.image_dataset_from_directory</code>()<br>
 : 클래스별 폴더가 있을 경우 데이터셋 만드는 메서드</p>
 </div>
 <pre><code class="language-python">train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -666,7 +666,7 @@ model.fit(
 <p>학습된 모델 파일을 로드해서 샘플 이미지를 추론하기 </p>
 <p>: 학습을 통해 만들어진 모델을 → <strong>실제로 새로운 입력 데이터에 적용하여 결과를 내놓는 단계</strong></p>
 <div class="callout">
-<p>💡 1. 가장 학습 결과 좋은 모델 불러오기<br>
+<p>1. 가장 학습 결과 좋은 모델 불러오기<br>
 2. 정상 이미지, 비정상이미지 불러오기<br>
 3. 이미지를 predict를 수행해서 확인</p>
 </div>
@@ -706,7 +706,7 @@ This image is 99.97 percent abnormal and 0.03 normal.</p>
 <p><img alt="Untitled" src="../assets/gpr/Untitled_4.png"></p>
 <p><img alt="Untitled" src="../assets/gpr/Untitled_5.png"></p>
 <div class="callout">
-<p>💡 normal 결과: abnormal 0.57, normal 99.43<br>
+<p>normal 결과: abnormal 0.57, normal 99.43<br>
 abnormal 결과: abnoraml 99.97, noraml 0.03<br>
 → 잘 분류 됨.</p>
 </div>
@@ -828,7 +828,7 @@ This image is 93.03 percent abnormal and 6.97 normal.</p>
 <p><img alt="Untitled" src="../assets/gpr/Untitled_7.png"></p>
 <p><img alt="Untitled" src="../assets/gpr/Untitled_8.png"></p>
 <p>선의 굵기를 보면 미세하게 달라짐. abnormal로 비교해보면 ResNet이 더 뚜렷하게 구분하는 것을 확인함.</p>
-<h2>💡깨달은 점</h2>
+<h2>깨달은 점</h2>
 <ul>
 <li>직접 딥러닝 모델을 가져와서 구현하는 시간이 오래 걸렸음. 아직 딥러닝 모델에 대해 익숙하지 않다는 뜻이기 때문에, 여러개를 더 접해서 익숙해질 필요가 있음.</li>
 <li>CNN을 구현하는 것은 배웠던 거라서 어렵지 않았지만, 무작정 레이어를 쌓는다고 해서 좋은 것은 아니고, 레이어를 쌓는거에 따라 딥러닝 모델이 달라지니까 단순히 레이어만 쌓는 것보다는 CNN기반 딥러닝 모델에 대해 파악해보는 것이 좋을 듯.</li>
@@ -837,6 +837,6 @@ This image is 93.03 percent abnormal and 6.97 normal.</p>
 </ul>
 </div></article>
 
-<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+<footer>© 2026 Soojung Choi</footer>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Systematic Evaluation of 168 SSL–MIL Combinations for Oncotype DX Prediction — Soojung Choi</title>
+<title>Systematic Evaluation of 168 SSL–MIL Combinations for Oncotype DX Prediction | Soojung Choi</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -24,51 +24,28 @@
 </div></section>
 
 <article class="article"><div class="container">
-<p><img alt="Thumnail. Overall Framework" src="../assets/ssl-mil/image.png"></p>
-<p>Thumnail. Overall Framework</p>
-<div class="callout">
-<p>💡</p>
-<p><strong>Summary</strong></p>
-<p><img alt="image.png" src="../assets/ssl-mil/image_1.png"></p>
-<table>
-<thead>
-<tr>
-<th><strong>Duration</strong></th>
-<th>2025.10 - 2026.07</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Role</strong></td>
-<td>First Author</td>
-</tr>
-<tr>
-<td>Research Area</td>
-<td>Computational Pathology</td>
-</tr>
-<tr>
-<td>Keywords</td>
-<td>MIL · SSL · Digital Pathology · Generalization</td>
-</tr>
-<tr>
-<td>Status</td>
-<td>Accepted, M.S. Thesis</td>
-</tr>
-</tbody>
-</table>
+<div class="tldr">
+<dl>
+<dt>문제</dt><dd>Oncotype DX 검사는 비싸고 접근성이 낮아, 병리 이미지(WSI)로 재발 위험을 예측하려는 시도가 많습니다. 하지만 어떤 특징 추출기와 MIL 모델 조합이 다른 기관 데이터에서도 통하는지는 체계적으로 비교된 적이 없었습니다.</dd>
+<dt>내 역할</dt><dd>단독 연구(석사 학위논문). 데이터 정리와 WSI 전처리, 공개된 SSL·MIL 코드를 하나로 통합한 168개 조합 평가 파이프라인 구축, 실험 설계, 통계 분석, 논문 작성을 맡았습니다.</dd>
+<dt>핵심 결과</dt><dd>외부 검증에서는 MIL 구조보다 특징 추출기 선택이 성능을 더 크게 좌우했습니다. 내부 1위였던 MIL(MeanMIL)이 외부에서는 11위로 떨어졌고, 3-class 예측에서 Low-risk 구분은 여전히 어려웠습니다.</dd>
+</dl>
+<figure><img alt="전체 연구 구조" src="../assets/ssl-mil/image.png"><figcaption>전체 연구 구조</figcaption></figure>
+<div class="meta"><span><b>기간</b>2025.10 – 2026.07</span><span><b>상태</b>Accepted, M.S. Thesis</span></div>
 </div>
 <h2>What problem did I solve?</h2>
 <h3>1. Background</h3>
+<p><img alt="Research summary" src="../assets/ssl-mil/image_1.png"></p>
 <p><img alt="image.png" src="../assets/ssl-mil/image_2.png"></p>
 <p>Oncotype DX is expensive and not easily accessible, making treatment decisions difficult in many clinical settings.</p>
 <p><img alt="image.png" src="../assets/ssl-mil/image_3.png"></p>
-<h3>❓Research Questions</h3>
+<h3>Research Questions</h3>
 <ul>
 <li>Which is more important: Feature Extractor or MIL?</li>
 <li>Does SSL consistently improve performance?</li>
 <li>Which architecture generalizes best across institutions?</li>
 </ul>
-<h3>🎯 Objective</h3>
+<h3>Objective</h3>
 <p>Systematically evaluate SSL and MIL combinations for robust and generalizable WSI-based Oncotype DX prediction.</p>
 <h2>How did I solve it?</h2>
 <h3>2. Dataset</h3>
@@ -143,15 +120,17 @@
 <p><img alt="image.png" src="../assets/ssl-mil/image_13.png"></p>
 <p><img alt="image.png" src="../assets/ssl-mil/image_14.png"></p>
 <h2>What was my contribution?</h2>
-<p>✅ Literature Review<br>
-✅ Dataset Curation<br>
-✅ WSI Preprocessing<br>
-✅ SSL Feature Extraction<br>
-✅ MIL Benchmark<br>
-✅ Experimental Design<br>
-✅ Statistical Analysis<br>
-✅ Visualization<br>
-✅ Thesis Writing</p>
+<ul>
+<li>Literature Review</li>
+<li>Dataset Curation</li>
+<li>WSI Preprocessing</li>
+<li>SSL Feature Extraction</li>
+<li>MIL Benchmark</li>
+<li>Experimental Design</li>
+<li>Statistical Analysis</li>
+<li>Visualization</li>
+<li>Thesis Writing</li>
+</ul>
 <h2>What did I learn?</h2>
 <p><strong>Technical Insight</strong></p>
 <ul>
@@ -208,6 +187,6 @@
 </ul>
 </div></article>
 
-<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+<footer>© 2026 Soojung Choi</footer>
 </body>
 </html>

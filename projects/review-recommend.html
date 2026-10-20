@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>리뷰 분석을 통한 상품 추천 여부 예측 — Soojung Choi</title>
+<title>리뷰 분석을 통한 상품 추천 여부 예측 | Soojung Choi</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -24,14 +24,14 @@
 </div></section>
 
 <article class="article"><div class="container">
-<h3>🪢<strong>데이터 출처</strong></h3>
+<h3><strong>데이터 출처</strong></h3>
 <p>https://www.kaggle.com/datasets/nicapotato/womens-ecommerce-clothing-reviews</p>
-<h3>📌프로젝트 개요</h3>
+<h3>프로젝트 개요</h3>
 <ul>
 <li>지그재그, 에이블리, 브랜디 등을 자주 이용하는 팀원과 함께 익숙한 도메인으로 자연어 처리를 시도해보고자 시작</li>
 </ul>
 <div class="callout">
-<p>➡️ <strong>작성한 리뷰가 해당 제품을 추천하는 리뷰인지, 비추천하는 리뷰인지 예측해보는 분류모델로 구현해보기</strong></p>
+<p>→ <strong>작성한 리뷰가 해당 제품을 추천하는 리뷰인지, 비추천하는 리뷰인지 예측해보는 분류모델로 구현해보기</strong></p>
 </div>
 <ul>
 <li>목표: 상품 리뷰 데이터 분석을 통해 상품 추천 여부(0, 1)을 예측하는 분류 모델 수행</li>
@@ -335,7 +335,7 @@ plt.show()</p>
 </li>
 </ul>
 <div class="callout">
-<p>📌 <code>re.findall()</code>: 띄어쓰기 단위로 단어를 가져오는 메서드!<br>
+<p><code>re.findall()</code>: 띄어쓰기 단위로 단어를 가져오는 메서드!<br>
 Ex. <code>df_clean_title['Title'].str.lower().str.cat(sep=' ')</code><br>
 =&gt;'some major design flaws my favorite buy! flattering ….’ <br>
 ⇒ 띄어쓰기 단위로 만들었음<br>
@@ -369,7 +369,7 @@ Ex. <code>df_clean_title['Title'].str.lower().str.cat(sep=' ')</code><br>
 <li>불용어 처리</li>
 </ul>
 <div class="callout">
-<p>📌 tokesn에서 stopwords(불용어 처리 메서드)에 해당되지 않는 단어를 따로 저장하면 → 불용어가 아닌 쓸모 있는 단어들만 채택됨.</p>
+<p>tokesn에서 stopwords(불용어 처리 메서드)에 해당되지 않는 단어를 따로 저장하면 → 불용어가 아닌 쓸모 있는 단어들만 채택됨.</p>
 </div>
 <pre><code class="language-python">filtered_sentence = [token for token in tokens if not token in en_stops]
 </code></pre>
@@ -416,7 +416,7 @@ Name: count, dtype: int64</p>
 <p>→ 데이터 불균형이 있는 상태임. 이 상태로 하면 머신러닝 모델의 성능이 떨어지겠지만 그래도 자연어 전처리를 시도해보는 게 이 프로젝트의 의의니까 그냥 패스하기로 함.</p>
 <h3>4. 데이터 전처리 - (1) 자연어 전처리: TF-IDF</h3>
 <div class="callout">
-<p>📌 자연어 데이터 → 머신러닝 입력값으로 바꿔줘야 함.<br>
+<p>자연어 데이터 → 머신러닝 입력값으로 바꿔줘야 함.<br>
 자연어 빈도 기반으로 → 수치로 변환한다는 뜻!</p>
 </div>
 <pre><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
@@ -587,7 +587,7 @@ print(&quot;Precision score: {}&quot;.format(precision_score(y_test, model_predi
 Precision score: <strong>0.89</strong>35185185185185</p>
 <p>→ 비추천에 대한 데이터가 적어서 Recall 성능 점수 현저히 낮음</p>
 <p>→ 추천에 대해 치우쳐진 데이터라서 Precision 성능 높음. </p>
-<h2>💡깨달은 점</h2>
+<h2>깨달은 점</h2>
 <ul>
 <li>데이터 불균형인 상태인 경우, Recall, Preicison을 통해 확인을 해봐야 함. 이럴 경우 다른 데이터 공모전에서 평가지표로 F1-score을 내세울 시 낮은 점수를 기록 할 수도 있으니 데이터 불균형 상태일 경우 어떻게 해야할지 생각해볼 필요성을 느낌.</li>
 <li>자연어 전처리에 대해 처음으로 시도해봤는데, 생각보다 재미있었음. 익숙하게 접하는 ‘리뷰’들도 하나의 데이터이기에 이거로부터 예측하는 모델을 설계하는 과정이 흥미로웠음.</li>
@@ -595,6 +595,6 @@ Precision score: <strong>0.89</strong>35185185185185</p>
 </ul>
 </div></article>
 
-<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+<footer>© 2026 Soojung Choi</footer>
 </body>
 </html>

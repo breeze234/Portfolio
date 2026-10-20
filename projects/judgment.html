@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>판결문 요약문 분류 — Soojung Choi</title>
+<title>판결문 요약문 분류 | Soojung Choi</title>
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
 </div></section>
 
 <article class="article"><div class="container">
-<h3>🪢데이터 출처</h3>
+<h3>데이터 출처</h3>
 <p>https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&amp;topMenu=100&amp;aihubDataSe=realm&amp;dataSetSn=97</p>
 <ul>
 <li>
@@ -32,7 +32,7 @@
 <p><img alt="Untitled" src="../assets/judgment/Untitled.png"></p>
 </li>
 </ul>
-<h3>📌프로젝트 개요</h3>
+<h3>프로젝트 개요</h3>
 <ul>
 <li>LSTM기술을 활용하여 법원 판결문 요약문을 분류하는 프로젝트 수행</li>
 <li>법원 판결문 데이터 → 형태소 분석기 활용 → 한국어 텍스트 전처리 수행에 의의를 둠</li>
@@ -151,7 +151,7 @@ df.head()<br>
 </tr>
 </tbody>
 </table>
-<p>➡️ array(<strong>['일반행정', '세무', '특허', '형사', '민사', '가사']</strong>, dtype=object)</p>
+<p>→ array(<strong>['일반행정', '세무', '특허', '형사', '민사', '가사']</strong>, dtype=object)</p>
 </li>
 <li>
 <p>카테고리별 데이터 분포 확인: 각 카테고리별로 몇개의 데이터가 있는지 확인</p>
@@ -252,7 +252,7 @@ Name: category, Length: 3004, dtype: int64</code></p>
 → 사전에 정의된 단어가 아니라는 의미<br>
 → 어간 추출 후 나오는 결과 단어가 사전에 없는 단어일 수도 있다고 함.</p>
 <div class="callout">
-<p>🔦</p>
+<p></p>
 <p>형태소의 2가지 종류<br>
 1. <strong>어간(stem)</strong>: 단어의 핵심! → 핵심 의미가 담겨져 있는 부분<br>
 2. 접사(affix):  단어에 추가적인 의미 부여</p>
@@ -387,8 +387,8 @@ tokenizer.fit_on_texts(data_tokenized)</p>
 ```</p>
 </li>
 </ul>
-<p>➡️ 상위 1000개 이용하기로 해서 len으로 확인하면 1000이 나오는 줄 알았는데 원래 데이터 수인 7509가 나옴.</p>
-<p>➡️ 찾아보니 <strong>1000개가 적용되는건 <code>texts_to_sequences</code>를 이용하면 적용</strong>된다고 함.</p>
+<p>→ 상위 1000개 이용하기로 해서 len으로 확인하면 1000이 나오는 줄 알았는데 원래 데이터 수인 7509가 나옴.</p>
+<p>→ 찾아보니 <strong>1000개가 적용되는건 <code>texts_to_sequences</code>를 이용하면 적용</strong>된다고 함.</p>
 <pre><code class="language-python"># 요약문 - 인덱스로 변환
 data_index = tokenizer.texts_to_sequences(data_tokenized)
 print(data_index[0])
@@ -518,10 +518,10 @@ model = Sequential()
 model.add(Embedding(1000, 120)) # 120개의 벡터가 만들어짐.
 model.add(LSTM(120)) #120개의 특징을 추출해내는 LSTM 모델
 model.add(Dense(6, activation='softmax')) # 6개의 값이 나오도록 설정</code></p>
-<p>➡️ <code>Embedding</code> 에 들어가는 input<br>
+<p>→ <code>Embedding</code> 에 들어가는 input<br>
 (1) 1000: 총 단어의 개수, 단어 집합의 크기.<br>
 (2) 120: 결과로 나오는 벡터의 크기 → 120개의 벡터가 나오게 된다는 소리.</p>
-<p>➡️ <code>Dense</code> 레이어: 6개의 카테고리로 분류가 되어야 하기 때문에 6개 뉴런 사용.<br>
+<p>→ <code>Dense</code> 레이어: 6개의 카테고리로 분류가 되어야 하기 때문에 6개 뉴런 사용.<br>
 + 소프트맥스 함수로 6개의 확률분포 만들기</p>
 <ul>
 <li>
@@ -529,8 +529,8 @@ model.add(Dense(6, activation='softmax')) # 6개의 값이 나오도록 설정</
 <p><code>python
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)</code></p>
-<p>➡️ 검증 데이터 손실 5회 이상 발생시 → 조기 종료</p>
-<p>➡️ 검증 데이터 정확도가 이전보다 좋아질 경우에 best_model.h5로 저장하기 </p>
+<p>→ 검증 데이터 손실 5회 이상 발생시 → 조기 종료</p>
+<p>→ 검증 데이터 정확도가 이전보다 좋아질 경우에 best_model.h5로 저장하기 </p>
 </li>
 <li>
 <p>loss , optimzer 설정: <code>model.compile</code></p>
@@ -538,7 +538,7 @@ mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, 
 </ul>
 <p><code>python
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])</code></p>
-<p>➡️ 6개의 카테고리로 분류 = 다중분류 = <code>categorcal_crossentropy</code></p>
+<p>→ 6개의 카테고리로 분류 = 다중분류 = <code>categorcal_crossentropy</code></p>
 <ul>
 <li>모델 학습: <code>modle.fit()</code></li>
 </ul>
@@ -690,7 +690,7 @@ for i in range(len(df)):
 ```</p>
 </li>
 </ul>
-<h3>💡 깨달은 점</h3>
+<h3>깨달은 점</h3>
 <ul>
 <li>실제로 텍스트 전처리하는 과정을 찾아내는 시간이 오래 걸렸음. ‘형태소’, ‘어간’과 같이 익숙하지 않은 단어였지만 특허관련 공모전에 나간 경험으로 데이터를 파악하는데는 오래 걸리지 않았던 것 같음.</li>
 <li>학부 과정에서 단순히 개념만 알던 것에서 실제로 시도해보는 과정을 거쳐보니 어렵지만 재미있었음.</li>
@@ -699,6 +699,6 @@ for i in range(len(df)):
 </ul>
 </div></article>
 
-<footer>© 2026 Soojung Choi · Built from Notion portfolio</footer>
+<footer>© 2026 Soojung Choi</footer>
 </body>
 </html>
